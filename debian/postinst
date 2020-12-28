@@ -1,0 +1,4 @@
+#!/bin/sh
+sudo systemctl daemon-reload
+sudo systemctl enable e-sabit.service
+sudo systemctl start e-sabit.service
