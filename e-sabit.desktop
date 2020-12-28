@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=E-Sabit Application
+Name[tr]=E-Sabit Uygulaması
+Type=Application
+Comment=User Acount Fixed Application
+Comment[tr]=Kullanıcı Hesap Dondurma Uygulaması
+Terminal=false
+Exec=/usr/bin/e-sabit
+Icon=/usr/share/e-sabit/sabit.png
+Categories=Qt;Utility;
+Keywords=sabit;esabit;e-sabit;
+GenericName=E-Sabit
+GenericName[tr]=E-Sabit
