@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
       this->trayIcon->setContextMenu(menu);
 
       // App icon
-      auto appIcon = QIcon(":/icons/sabit.png");
+      auto appIcon = QIcon(":/icons/sabit.svg");
       this->trayIcon->setIcon(appIcon);
       this->setWindowIcon(appIcon);
 
@@ -346,8 +346,8 @@ QMenu* MainWindow::createMenu()
     auto restoreAction = new QAction(tr("&Ayarlar"), this);
     connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
 
-    auto quitAction = new QAction(tr("&Kapat"), this);
-    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+   /// auto quitAction = new QAction(tr("&Kapat"), this);
+   /// connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     auto menu = new QMenu(this);
     //menu->addAction(quitAction)
 
@@ -356,7 +356,7 @@ QMenu* MainWindow::createMenu()
     //menu->addAction(maximizeAction);
     menu->addAction(restoreAction);
     menu->addSeparator();
-    menu->addAction(quitAction);
+    //menu->addAction(quitAction);
 
    // trayIcon = new QSystemTrayIcon(this);
     //trayIcon->setContextMenu(trayIconMenu);
@@ -385,6 +385,7 @@ void MainWindow::WidgetClosed()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
      emit WidgetClosed();
+     //QWidget::hide();
      event->ignore();
 
 }

@@ -25,7 +25,7 @@ QWidget *MainWindow::giris()
     /*******************************************************/
 
     QPalette palette;
-    QPixmap pixmap(":/icons/sabit.png");
+    QPixmap pixmap(":/icons/sabit.svg");
     palette.setBrush(QPalette::Background, QBrush(pixmap));
     auto  screenbtn = new QPushButton(girisPage);
     screenbtn->setFixedSize(QSize(boy*6,boy*6));

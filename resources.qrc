@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/sabit.png</file>
+        <file>icons/sabit.svg</file>
     </qresource>
 </RCC>
