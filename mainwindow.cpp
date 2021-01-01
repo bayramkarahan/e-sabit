@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
       this->trayIcon->setContextMenu(menu);
 
       // App icon
-      auto appIcon = QIcon(":/icons/sabit.png");
+      auto appIcon = QIcon(":/icons/sabit.svg");
       this->trayIcon->setIcon(appIcon);
       this->setWindowIcon(appIcon);
 
@@ -77,12 +77,14 @@ MainWindow::MainWindow(QWidget *parent) :
       timergizle = new QTimer(this);
       connect(timergizle, SIGNAL(timeout()), this, SLOT(gizle()));
       timergizle->start(1);
+      aw=ayar();
 
+      aw->setEnabled(false);
       /************************************************************/
-        QTabWidget *tw=new QTabWidget(this);
+        tw=new QTabWidget(this);
         tw->resize(this->width(),this->height());
-        tw->addTab(giris(),"");
-        tw->addTab(ayar(),"Ayarlar");
+        tw->addTab(giris(),"Giriş");
+        tw->addTab(aw,"Ayarlar");
         tw->addTab(hakkinda(),"Hakkında");
 
 
@@ -323,8 +325,12 @@ void  MainWindow::gizle()
 {
     //hide();
    // qDebug()<<"deded";
+    aw->setEnabled(false);
+    localPassword->setText("");
+    tw->setCurrentIndex(0);
     QWidget::hide();
     timergizle->stop();
+
   }
 
 QMenu* MainWindow::createMenu()
@@ -346,8 +352,8 @@ QMenu* MainWindow::createMenu()
     auto restoreAction = new QAction(tr("&Ayarlar"), this);
     connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
 
-    auto quitAction = new QAction(tr("&Kapat"), this);
-    connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+   /// auto quitAction = new QAction(tr("&Kapat"), this);
+   /// connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
     auto menu = new QMenu(this);
     //menu->addAction(quitAction)
 
@@ -356,7 +362,7 @@ QMenu* MainWindow::createMenu()
     //menu->addAction(maximizeAction);
     menu->addAction(restoreAction);
     menu->addSeparator();
-    menu->addAction(quitAction);
+    //menu->addAction(quitAction);
 
    // trayIcon = new QSystemTrayIcon(this);
     //trayIcon->setContextMenu(trayIconMenu);
@@ -379,12 +385,16 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 
 void MainWindow::WidgetClosed()
 {
+    aw->setEnabled(false);
+    localPassword->setText("");
+    tw->setCurrentIndex(0);
     QWidget::hide();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
      emit WidgetClosed();
+     //QWidget::hide();
      event->ignore();
 
 }
