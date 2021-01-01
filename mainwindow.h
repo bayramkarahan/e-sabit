@@ -60,6 +60,8 @@ private:
     QWidget *wid;
     Ui::MainWindow *ui;
     QWidget *ayar();
+    QWidget *aw;
+     QTabWidget *tw;
     QWidget *giris();
     QWidget *hakkinda();
     QWidget *qww;
