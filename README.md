@@ -1,10 +1,10 @@
 # E-Sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
-![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/e-sabit1.png)
+![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/esabit01.png)
 <br/>
 
-![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/e-sabit2.png)
+![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/esabit02.png)
 <br/>
 
 ![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/e-sabit3.png)
