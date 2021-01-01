@@ -19,6 +19,8 @@
  *****************************************************************************/
 #include<QCheckBox>
 #include<QProcess>
+#include<QProgressDialog>
+#include<QToolButton>
 
 #ifndef AYAR_H
 #define AYAR_H
@@ -27,27 +29,10 @@ QWidget *MainWindow::ayar()
 {
 
     QWidget *ayarPage=new QWidget();
+     QFont f2( "Arial", 8, QFont::Normal);
     /*******************************************************/
     QStringList ayarlst=fileToList("/usr/local/share/","e-sabit.conf");
     /*******************************************/
-    QLabel *localuserLabel=new QLabel(ayarPage);
-    localuserLabel->setText("Yetkili Kullanıcı Adı");
-    localuserLabel->setStyleSheet("background-color: #acacac");
-
-    user=QDir::homePath().split("/")[2];
-    localUsername=new QLineEdit(ayarPage);
-    localUsername->setFixedSize(en*6-3,boy);
-    localUsername->setText(user);
-    localUsername->setStyleSheet("background-color: #ffffff");
-
-    QLabel *localpasswordLabel=new QLabel(ayarPage);
-    localpasswordLabel->setText("Yetkili Kullanıcı Şifresi");
-    localpasswordLabel->setStyleSheet("background-color: #acacac");
-
-    localPassword=new QLineEdit(ayarPage);
-    localPassword->setFixedSize(en*6-3,boy);
-    localPassword->setEchoMode(QLineEdit::Password);
-    localPassword->setStyleSheet("background-color: #ffffff");
 
                /*************************************************/
     if(listGetLine(ayarlst,"copyState")!="")
@@ -57,20 +42,45 @@ QWidget *MainWindow::ayar()
      copyState=strcopyState.toInt();
     }
      /********************************************************/
-    QPushButton *kullaniciYedekleButton= new QPushButton;
-    kullaniciYedekleButton->setFixedSize(335, 30);
-    kullaniciYedekleButton->setIconSize(QSize(150,30));
-    kullaniciYedekleButton->setText("Kullanıcı Yedekle");
+
+    QToolButton *kullaniciYedekleButton= new QToolButton;
+    kullaniciYedekleButton->setFixedSize(QSize(boy*3,boy*3));
+    kullaniciYedekleButton->setIconSize(QSize(boy*2,boy*2));
     kullaniciYedekleButton->setStyleSheet("Text-align:center");
-    //ogrenciZilButton->setFlat(true);
+    kullaniciYedekleButton->setIcon(QIcon(":/icons/backup.svg"));
+    kullaniciYedekleButton->setAutoRaise(true);
+    kullaniciYedekleButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    kullaniciYedekleButton->setFont(f2);
+    kullaniciYedekleButton->setText("Kullanıcı Yedekle");
+
     QLineEdit *kullaniciDizinLineEdit=new QLineEdit(ayarPage);
     kullaniciDizinLineEdit->resize(150,25);
     if(listGetLine(ayarlst,"kullaniciDizin")!="")
         kullaniciDizinLineEdit->setText(listGetLine(ayarlst,"kullaniciDizin").split("|")[1]);
 
     QLineEdit *kullaniciSifreLineEdit=new QLineEdit;
+    kullaniciSifreLineEdit->setEchoMode(QLineEdit::Password);
+
          if(listGetLine(ayarlst,"kullaniciSifre")!="")
             kullaniciSifreLineEdit->setText(listGetLine(ayarlst,"kullaniciSifre").split("|")[1]);
+             QCheckBox *checkboxps = new QCheckBox("Şifre Göster",ayarPage);
+         QFont ff( "Arial", 8, QFont::Normal);
+         checkboxps->setFont(ff);
+         checkboxps->setChecked(false);
+         connect(checkboxps, &QCheckBox::clicked, [=]() {
+             if(checkboxps->checkState()==Qt::Checked)
+             {
+                 kullaniciSifreLineEdit->setEchoMode(QLineEdit::Normal);
+              // qDebug()<<"check yapıldı";
+             }
+             if(checkboxps->checkState()==Qt::Unchecked)
+             {
+                kullaniciSifreLineEdit->setEchoMode(QLineEdit::Password);
+                //qDebug()<<"check kaldırıldı";
+             }
+
+     });
+
 
     connect(kullaniciYedekleButton, &QPushButton::clicked, [=]() {
 
@@ -92,7 +102,7 @@ QWidget *MainWindow::ayar()
                 }
                 if (drm) return;
                 /**************************************************************/
-                        bool kullanicidizin=false;
+                       bool kullanicidizin=false;
                         bool kullanicisifre=false;
                         bool drmm=false;
                         if(kullaniciDizinLineEdit->text()!="") kullanicidizin=true;
@@ -165,6 +175,8 @@ QWidget *MainWindow::ayar()
     kullaniciDizinSelectButton->setText("...");
     kullaniciDizinSelectButton->setStyleSheet("Text-align:center");
     //ogrenciZilFileSelectButton->setFlat(true);
+
+
     connect(kullaniciDizinSelectButton, &QPushButton::clicked, [=]() {
         QFileDialog dialog(this);
           dialog.setFileMode(QFileDialog::Directory);
@@ -176,11 +188,16 @@ QWidget *MainWindow::ayar()
  });
 
 /************************************************************************/
-    QPushButton *yedekKullaniciYukleButton= new QPushButton;
-    yedekKullaniciYukleButton->setFixedSize(335, 30);
-    yedekKullaniciYukleButton->setText("Yedek Kullanıcıyı Geri Yükle");
+    QToolButton *yedekKullaniciYukleButton= new QToolButton;
+    yedekKullaniciYukleButton->setFixedSize(QSize(boy*3,boy*3));
+    yedekKullaniciYukleButton->setIconSize(QSize(boy*2,boy*2));
     yedekKullaniciYukleButton->setStyleSheet("Text-align:center");
-    //ogrenciZilFileSelectButton->setFlat(true);
+    yedekKullaniciYukleButton->setIcon(QIcon(":/icons/restore.svg"));
+    yedekKullaniciYukleButton->setAutoRaise(true);
+    yedekKullaniciYukleButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    yedekKullaniciYukleButton->setFont(f2);
+    yedekKullaniciYukleButton->setText("Yedeği Geri Yükle");
+
      /************************************************************************/
 
      connect(yedekKullaniciYukleButton, &QPushButton::clicked, [=]() {
@@ -256,11 +273,15 @@ QWidget *MainWindow::ayar()
      });
 
 
-        QPushButton *ayarKaydetButton= new QPushButton;
-    ayarKaydetButton->setFixedSize(335, 30);
-    ///ayarKaydetButton->setIconSize(QSize(150,30));
-    ayarKaydetButton->setText("Ayarları Kaydet");
+    QToolButton *ayarKaydetButton= new QToolButton;
+    ayarKaydetButton->setFixedSize(QSize(boy*3,boy*3));
+    ayarKaydetButton->setIconSize(QSize(boy*2,boy*2));
     ayarKaydetButton->setStyleSheet("Text-align:center");
+    ayarKaydetButton->setIcon(QIcon(":/icons/save.svg"));
+    ayarKaydetButton->setAutoRaise(true);
+    ayarKaydetButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    ayarKaydetButton->setFont(f2);
+    ayarKaydetButton->setText("Ayarları Kaydet");
 
     connect(ayarKaydetButton, &QPushButton::clicked, [=]() {
         kontrol();
@@ -281,7 +302,11 @@ QWidget *MainWindow::ayar()
              drmm1=true;
          }
          if (drmm1) return;
-/**********************************************************/
+
+         kullaniciSifreLineEdit->setEchoMode(QLineEdit::Password);///şifre gizleniyor
+         checkboxps->setChecked(false);
+
+/***********************e-sabit.conf oluşturuluyor***********************************/
          QStringList ayarlist;
         ayarlist.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
         ayarlist.append("copyState|"+QString::number(copyState));
@@ -293,9 +318,9 @@ QWidget *MainWindow::ayar()
 /*******************************restore.sh oluştuluyor**************/
         QStringList restore;
         restore<<"#!/bin/bash";
-        restore<<"rm -rf /home/"+yedekuser;
-        restore<<"rsync -del -av /var/backups/"+yedekuser+"/ /home/"+yedekuser+"/";
-        restore<<"chown -R "+yedekuser+":"+yedekuser+" /home/"+yedekuser+"/";
+        ///restore<<"rm -rf /home/"+yedekuser;
+        restore<<"rsync -apoglr --delete /var/backups/"+yedekuser+"/ /home/"+yedekuser+"/";
+        //restore<<"chown -R "+yedekuser+":"+yedekuser+" /home/"+yedekuser+"/";
         restore<<"echo "+yedekuser+":"+kullaniciSifreLineEdit->text()+"|chpasswd";
         listToFile("/home/"+QDir::homePath().split("/")[2]+"/",restore,"restore.sh");
         QString kmt19="chmod 777 /home/"+QDir::homePath().split("/")[2]+"/restore.sh";
@@ -303,8 +328,8 @@ QWidget *MainWindow::ayar()
 /***************************backup.sh oluşturuldu******************************************/
         QStringList backup;
         backup<<"#!/bin/bash";
-        backup<<"rm -rf /var/backups/"+yedekuser;
-        backup<<"cp -R /home/"+yedekuser +" /var/backups/";
+        ///backup<<"rm -rf /var/backups/"+yedekuser;
+        backup<<"rsync -apoglr --delete /home/"+yedekuser +" /var/backups/";
         listToFile("/home/"+QDir::homePath().split("/")[2]+"/",backup,"backup.sh");
         QString kmt20="chmod 777 /home/"+QDir::homePath().split("/")[2]+"/backup.sh";
         system(kmt20.toStdString().c_str());
@@ -322,6 +347,7 @@ QWidget *MainWindow::ayar()
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/backup.sh /usr/local/bin/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/restore.sh\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/backup.sh\\n\"";
+            liste<<"send \"echo "+localPassword->text()+"|sudo -S /bin/bash /usr/local/bin/backup.sh\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/e-sabit.conf /usr/local/share/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/share/e-sabit.conf\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S systemctl enable E-Sabit.service\\n\"";
@@ -341,6 +367,8 @@ QWidget *MainWindow::ayar()
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/backup.sh /usr/local/bin/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/restore.sh\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/backup.sh\\n\"";
+            liste<<"send \"echo "+localPassword->text()+"|sudo -S /bin/bash /usr/local/bin/backup.sh\\n\"";
+
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/e-sabit.conf /usr/local/share/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/share/e-sabit.conf\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S systemctl stop E-Sabit.service\\n\"";
@@ -355,7 +383,15 @@ QWidget *MainWindow::ayar()
         }
         QString kmt22="chmod 777 /home/"+QDir::homePath().split("/")[2]+"/run.sh";
         system(kmt22.toStdString().c_str());
-
+       /* QStringList arguments1;
+              arguments1 << "-c" << QString("/home/"+QDir::homePath().split("/")[2]+"/backup.sh");
+              QProcess process1;
+              process1.start("/bin/bash",arguments1);
+               if(process1.waitForFinished())
+      {
+         // version = process.readAll();
+         //   result.chop(3);
+      }*/
         QString result="";
         QStringList arguments;
                 arguments << "-c" << QString("/home/"+QDir::homePath().split("/")[2]+"/run.sh");
@@ -390,8 +426,8 @@ QWidget *MainWindow::ayar()
 
 
     QCheckBox *checkbox = new QCheckBox("Her Açılışta Kullanıcı Bilgileri Yedekten Yüklensin.",ayarPage);
-    QFont ff( "Arial", 8, QFont::Normal);
-    checkbox->setFont(ff);
+    QFont f1( "Arial", 8, QFont::Normal);
+    checkbox->setFont(f1);
     checkbox->setChecked(copyState);
    /// qDebug()<<"copystate1"<<copyState;
     connect(checkbox, &QCheckBox::clicked, [=]() {
@@ -402,37 +438,27 @@ QWidget *MainWindow::ayar()
 
     auto layout = new QGridLayout(ayarPage);
     layout->setContentsMargins(0, 0, 0,0);
-    layout->setVerticalSpacing(5);
-    layout->setColumnMinimumWidth(0, 37);
+   /// layout->setVerticalSpacing(5);
+   /// layout->setColumnMinimumWidth(0, 37);
     //layout->addWidget(adLabel, 2,0,1,2);
-
-
-
-
-
-            layout->addWidget(localuserLabel, 2,0,1,1);
-            layout->addWidget(localUsername, 2,1,1,1);
-            layout->addWidget(localpasswordLabel, 5,0,1,1);
-            layout->addWidget(localPassword, 5,1,1,1);
-
 
     layout->addWidget(new QLabel("<font size=2>Yedeklenecek Kullanıcı Dizini</font>"), 10,0,1,1);
     layout->addWidget(kullaniciDizinLineEdit, 10,1,1,1);
     layout->addWidget(kullaniciDizinSelectButton, 10,2,1,1);
 
     layout->addWidget(new QLabel("<font size=2>Kullanıcı Şifresi</font>"), 15,0,1,1);
-    layout->addWidget(kullaniciSifreLineEdit, 15,1,1,2);
-    layout->addWidget(checkbox,20,0,1,2);
+    layout->addWidget(kullaniciSifreLineEdit, 15,1,1,1);
+    layout->addWidget(checkboxps, 16,1,1,1);
 
-    layout->addWidget(kullaniciYedekleButton,30,0,1,2);
+    layout->addWidget(checkbox,20,0,1,3);
+    QHBoxLayout *layout1 = new QHBoxLayout;
+         layout1->addWidget(kullaniciYedekleButton);
+         layout1->addWidget(yedekKullaniciYukleButton);
+         layout1->addWidget(ayarKaydetButton);
+         layout->addLayout(layout1, 30, 0,1,3,Qt::AlignHCenter);
 
-    layout->addWidget(yedekKullaniciYukleButton,35,0,1,2);
 
-
-    layout->addWidget(ayarKaydetButton,40,0,1,2);
-
-
-layout->setColumnStretch(6, 255);
+///layout->setColumnStretch(6, 255);
 
     return ayarPage;
 }

@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/sabit.png</file>
+        <file>icons/sabit.svg</file>
+        <file>icons/backup.svg</file>
+        <file>icons/save.svg</file>
+        <file>icons/restore.svg</file>
     </qresource>
 </RCC>
