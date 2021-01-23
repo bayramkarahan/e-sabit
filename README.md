@@ -1,16 +1,15 @@
 # E-Sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
-![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC1.png)
+![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/1.png)
 <br/>
 
-![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC2.png)
+![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/2.png)
 <br/>
 
-![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC3.png)
+![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/3.png)
 <br/>
 
-![E-Sabit](https://github.com/bayramkarahan/E-Sabit/blob/main/ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC4.png)
 
 Uygulama Qt ortamında c++ ile yazılmıştır..
 Qt 5.11.2 versiyonu ile yazılmıştır.
