@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/sabit.svg</file>
+        <file>icons/backup.svg</file>
+        <file>icons/save.svg</file>
+        <file>icons/restore.svg</file>
+        <file>icons/pardus.svg</file>
+    </qresource>
+</RCC>
