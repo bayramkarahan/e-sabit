@@ -1,7 +1,7 @@
 # E-Sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
-![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/1.png)
+![E-Sabit](karahan/e-sabit/blob/master/1.png)
 <br/>
 
 ![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/2.png)
@@ -9,7 +9,6 @@ Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 
 ![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/3.png)
 <br/>
-
 
 Uygulama Qt ortamında c++ ile yazılmıştır..
 Qt 5.11.2 versiyonu ile yazılmıştır.
