@@ -1,7 +1,7 @@
 # E-Sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
-![E-Sabit](master/1.png)
+![E-Sabit](1.png)
 <br/>
 
 ![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/2.png)
