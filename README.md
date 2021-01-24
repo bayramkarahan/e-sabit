@@ -4,10 +4,10 @@ Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 ![E-Sabit](1.png)
 <br/>
 
-![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/2.png)
+![E-Sabit](2.png)
 <br/>
 
-![E-Sabit](https://kod.pardus.org.tr/karahan/e-sabit/blob/master/3.png)
+![E-Sabit](3.png)
 <br/>
 
 Uygulama Qt ortamında c++ ile yazılmıştır..
