@@ -1,9 +1,18 @@
 <RCC>
     <qresource prefix="/">
-        <file>icons/sabit.svg</file>
         <file>icons/backup.svg</file>
         <file>icons/save.svg</file>
         <file>icons/restore.svg</file>
         <file>icons/pardus.svg</file>
+        <file>icons/use.png</file>
+        <file>icons/help.svg</file>
+        <file>icons/e-sabit.svg</file>
+        <file>icons/backup.png</file>
+        <file>icons/restore.png</file>
+        <file>icons/selectcheckbox.png</file>
+        <file>icons/selectdirectory.png</file>
+        <file>icons/about.svg</file>
+        <file>icons/lisans.svg</file>
+        <file>icons/settings.svg</file>
     </qresource>
 </RCC>

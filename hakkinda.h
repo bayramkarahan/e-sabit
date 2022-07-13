@@ -34,10 +34,9 @@ QWidget *MainWindow::hakkinda()
 
     hak->setText("Bu Uygulama Kullanıcı Hesabını Sabitleme Amaçlı Yazılmıştır."
                  "\n"
-                   "\n   Copyright (C) 2020 by Bayram KARAHAN                                     "
+                   "\n   Copyright (C) 2022 by Bayram KARAHAN                                     "
                  "\n\n   <bayramk@gmail.com>  <bayramkarahan.blogspot.com>                                                    "
-                  "\n\thttps://kod.pardus.org.tr/karahan/e-tahta.git"
-                  "\n\thttps://github.com/bayramkarahan/E-Sabit                                                                         "
+                   "\n\thttps://github.com/bayramkarahan/e-sabit                                                                         "
                   "\n\n   This program is free software; you can redistribute it and/or modify    "
                   "\n   it under the terms of the GNU General Public License as published by    "
                   "\n   the Free Software Foundation; either version 3 of the License, or       "

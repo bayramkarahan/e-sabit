@@ -22,8 +22,14 @@
 #pragma once
 #include <QMainWindow>
 #include<QLineEdit>
-#include<QMessageBox>
 #include<QSystemTrayIcon>
+#include<QPushButton>
+#include<QMessageBox>
+#include <QGuiApplication>
+#include<QTextDocument>
+#include<QPrinter>
+#include<QTextEdit>
+
 namespace Ui {
 class MainWindow;
 }
@@ -45,12 +51,12 @@ public slots:
     void iconActivated(QSystemTrayIcon::ActivationReason);
     void gizle();
     void kontrol();
-    void sudoYetkiKontolSlot();
-    void passwordKontrolSlot();
+    bool passwordKontrolSlot();
     void versionKontrolSlot();
     QString myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon);
-
-
+    void  widgetShow();
+    void ayarKaydetButtonSlot();
+    void yedekStatus();
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
@@ -66,17 +72,12 @@ private:
     QWidget *hakkinda();
     QWidget *qww;
     int boy=30;
-    int en=30;
-    int btsayisi=4;
 
      bool copyState;
      QString version;
-     QString sudoyetki="";
      QString user;
      QString passwordstatus;
      bool status;
-     QLineEdit *localPassword;
-     QLineEdit *localUsername;
 
     QStringList ayarlst;
     QTimer *timergizle;
@@ -85,6 +86,10 @@ private:
 
     QMenu* createMenu();
 
+    QLineEdit *kullaniciDizinLineEdit;
+    QCheckBox *checkbox;
+    int fnt=10;
+    QLabel *labelYedekStatus;
 };
 
 #endif // MAINWINDOW_H

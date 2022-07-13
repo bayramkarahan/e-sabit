@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += widgets  xml network core gui
+QT       += widgets core gui  printsupport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -35,7 +35,9 @@ HEADERS += \
     ayar.h \
     singleinstance.h \
     giris.h \
-    hakkinda.h
+    hakkinda.h \
+    runCommand.h
+
 
 FORMS +=
 
@@ -48,7 +50,7 @@ target.path = /usr/bin
 desktop_file.files = e-sabit.desktop
 desktop_file.path = /usr/share/applications/
 
-icon.files = icons/sabit.svg
+icon.files = icons/e-sabit.svg
 icon.path = /usr/share/e-sabit
 
 auto_start.files = e-sabit.desktop
@@ -61,3 +63,4 @@ INSTALLS += target desktop_file icon auto_start service
 
 DISTFILES += \
     e-sabit.service
+

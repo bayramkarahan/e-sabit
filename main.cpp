@@ -20,10 +20,12 @@
 #include "mainwindow.h"
 #include <QApplication>
 #include<singleinstance.h>
+
 #define SINGLE_INSTANCE ".Sabit"
 
 int main(int argc, char *argv[])
 {
+
     QApplication a(argc, argv);
     QString name = SINGLE_INSTANCE;
 

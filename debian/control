@@ -22,7 +22,5 @@ Homepage: http://pardus.org.tr
 Package: e-sabit
 Architecture: amd64
 Depends: ${shlibs:Depends}, ${misc:Depends},
-          libqt5xml5,
-	rsync,
-	expect
-Description: E-Sabit uygulaması
+          rsync
+Description: e-sabit uygulaması

@@ -1,4 +1,4 @@
-# E-Sabit
+# e-sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
 ![E-Sabit](1.png)
@@ -8,6 +8,9 @@ Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
 
 ![E-Sabit](3.png)
+<br/>
+
+![E-Sabit](4.png)
 <br/>
 
 Uygulama Qt ortamında c++ ile yazılmıştır..
@@ -23,7 +26,7 @@ Derlemek için kodu indiriniz.. kod adında bir dizinde açtığınızı varsaya
 <br/>
 3-cd build
 <br/>
-4-qmake ../E-Sabit.pro
+4-qmake ../e-sabit.pro
 <br/>
 5-make&make clean
 <br/>
