@@ -482,7 +482,7 @@ QWidget *MainWindow::ayar()
                      "Bu işlem yedeklenen son yedeği yükleyecektir. "
                      "Sistemde bozulmalar vb. durumda isteğe bağlı olarak yapılması tavsiye edilir."
                      "<br/><br/><b>Not:</b> Yazılımı kullanmadan önce <b>Bilgilendirme ve Lisans </b> bölümlerini mutlaka inceleyiniz."
-                     "<br/><b>Bilişim sınıfı ve internet kafe vb. yerlerde kullanmak için aşağıda anlatılan <i>1. , 2. , 3.</i>adımlar mutlaka seçilerek ayarlanmalıdır..</b>"
+                     "<br/><b>Bilişim sınıfı ve internet kafe vb. yerlerde kullanmak için burada anlatılan <i>1. , 2. , 3.</i>adımları mutlaka seçilerek ayarlanmalıdır..</b>"
 
                      );
         QPrinter pdf;
