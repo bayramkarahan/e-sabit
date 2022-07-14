@@ -1,6 +1,9 @@
 # e-sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
+![E-Sabit](0.png)
+<br/>
+
 ![E-Sabit](1.png)
 <br/>
 
@@ -11,6 +14,7 @@ Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
 
 ![E-Sabit](4.png)
+
 <br/>
 
 Uygulama Qt ortamında c++ ile yazılmıştır..

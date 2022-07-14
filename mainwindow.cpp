@@ -266,7 +266,7 @@ QMenu* MainWindow::createMenu()
     connect( restoreAction, SIGNAL(triggered()), this, SLOT(widgetShow()));
 
     auto menu = new QMenu(this);
- //   menu->addAction(closeAction);
+    menu->addAction(closeAction);
     menu->addAction(minimizeAction);
     menu->addAction(restoreAction);
     menu->addSeparator();
@@ -287,15 +287,11 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
 
 void MainWindow::widgetClose()
 {
-    QString sonuc=myMessageBox("Uyarı", "\nUygulama Kapatılacak. Önerilmemektedir! Emin misiniz?"
-             ,"evet","hayir","",QMessageBox::Question);
-    if (sonuc == "evet"){
-
-        if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit'"))
+         if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit'"))
         {
-
+QCoreApplication::exit(0);
         }
-    }
+
 }
 
 void MainWindow::WidgetClosed()
