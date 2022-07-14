@@ -1,9 +1,0 @@
-491ef78e2750382cb577972e87b54b4c  lib/systemd/system/e-sabit.service
-2356c1a4d3342c53462e3e9bfd9843e9  usr/bin/e-sabit
-0e222442fa39b97505ce9886ce3e72bb  usr/share/applications/e-sabit.desktop
-ebc56ba9fa5504257022099ef640eefd  usr/share/doc/e-sabit/changelog.gz
-fd315c3e7e54b3c2eb5bc5c7f4d64cd9  usr/share/doc/e-sabit/copyright
-2a4c77ed0859872ae859d0b2bdfc029b  usr/share/e-sabit/backup.sh
-45ddf33a3df56ca69b3fe752447f7794  usr/share/e-sabit/e-sabit.svg
-f63f507e17af55c025bfbeb60cee1444  usr/share/e-sabit/restorebutton.sh
-e4e987a1c2d91e8c7a999d57213dfdfa  usr/share/e-sabit/restoreservice.sh
