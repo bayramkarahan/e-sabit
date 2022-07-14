@@ -36,15 +36,19 @@ QWidget *MainWindow::giris()
     sat2->setText("2- Uygulama Debian(Pardus) tabanlı dağıtımlar için yazılmıştır.");
 
     auto *sat3=new QLabel(girisPage);
+    sat3->setWordWrap(true);
+    sat3->setFixedSize(this->width(),boy);
     sat3->setText("3- Uygulama; Bilişim sınıf, internet kafe, kütüphane vb. halka açık alanlar"
-                  "\n   için  kullanılan bilgisayarların ayarlarını sabitlemek için yazılmıştır.");
+                  " için  kullanılan bilgisayarların ayarlarını sabitlemek için yazılmıştır.");
 
     auto *sat4=new QLabel(girisPage);
     sat4->setText("4- Kişisel bilgisayarlar için tavsiye edilmemektedir.");
 
     auto *sat5=new QLabel(girisPage);
-    sat5->setText("5- Bu Uygulamayı kullanmaktan oluşabilecek zarar veya veri kayıplarından\n"
+    sat5->setText("5- Bu Uygulamayı kullanmaktan oluşabilecek zarar veya veri kayıplarından"
                   "   geliştirici sorumlu tutlamayacağını, yazılımı kuran ve kullanan kabul eder.");
+    sat5->setWordWrap(true);
+    sat5->setFixedSize(this->width(),boy*1.5);
 
  //   QLabel *lbl=new QLabel(girisPage);
 //lbl->setFixedSize(boy,boy*5);
