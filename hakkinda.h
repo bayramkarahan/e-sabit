@@ -49,11 +49,6 @@ QWidget *MainWindow::hakkinda()
                   "\n   along with this program; if not, write to the                          "
                   "\n   Free Software Foundation, Inc.,                                         "
                   "\n   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA .          "
-
-                 "\n\n\n"
-                 "İstek ve önerileriniz için;"
-                 "\nE-Posta: bayramk@gmail.com"
-                 "\nbayramkarahan.blogspot.com"
                  "\n");
     QFont ff( "Arial", 7, QFont::Normal);
     hak->setFont(ff);
