@@ -62,6 +62,11 @@ OBJECTS       = main.o \
 		moc_mainwindow.o \
 		moc_singleinstance.o
 DIST          = e-sabit.service \
+		e-sabit.desktop \
+		icons/e-sabit.svg \
+		backup.sh \
+		restoreservice.sh \
+		restorebutton.sh \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
@@ -166,8 +171,7 @@ DIST          = e-sabit.service \
 		ayar.h \
 		singleinstance.h \
 		giris.h \
-		hakkinda.h \
-		runCommand.h main.cpp \
+		hakkinda.h main.cpp \
 		mainwindow.cpp \
 		singleinstance.cpp
 QMAKE_TARGET  = e-sabit
@@ -410,7 +414,7 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents mainwindow.h filecrud.h ayar.h singleinstance.h giris.h hakkinda.h runCommand.h $(DISTDIR)/
+	$(COPY_FILE) --parents mainwindow.h filecrud.h ayar.h singleinstance.h giris.h hakkinda.h $(DISTDIR)/
 	$(COPY_FILE) --parents main.cpp mainwindow.cpp singleinstance.cpp $(DISTDIR)/
 
 
@@ -562,9 +566,39 @@ uninstall_service: FORCE
 	-$(DEL_DIR) $(INSTALL_ROOT)/lib/systemd/system/ 
 
 
-install: install_target install_desktop_file install_icon install_auto_start install_service  FORCE
+install_backup: first FORCE
+	@test -d $(INSTALL_ROOT)/usr/share/e-sabit || mkdir -p $(INSTALL_ROOT)/usr/share/e-sabit
+	-$(QINSTALL_PROGRAM) /home/by/Masaüstü/e-sabit/backup.sh $(INSTALL_ROOT)/usr/share/e-sabit/backup.sh
+	-: $(INSTALL_ROOT)/usr/share/e-sabit/backup.sh
 
-uninstall: uninstall_target uninstall_desktop_file uninstall_icon uninstall_auto_start uninstall_service  FORCE
+uninstall_backup: FORCE
+	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/share/e-sabit/backup.sh
+	-$(DEL_DIR) $(INSTALL_ROOT)/usr/share/e-sabit/ 
+
+
+install_restoreservice: first FORCE
+	@test -d $(INSTALL_ROOT)/usr/share/e-sabit || mkdir -p $(INSTALL_ROOT)/usr/share/e-sabit
+	-$(QINSTALL_PROGRAM) /home/by/Masaüstü/e-sabit/restoreservice.sh $(INSTALL_ROOT)/usr/share/e-sabit/restoreservice.sh
+	-: $(INSTALL_ROOT)/usr/share/e-sabit/restoreservice.sh
+
+uninstall_restoreservice: FORCE
+	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/share/e-sabit/restoreservice.sh
+	-$(DEL_DIR) $(INSTALL_ROOT)/usr/share/e-sabit/ 
+
+
+install_restorebutton: first FORCE
+	@test -d $(INSTALL_ROOT)/usr/share/e-sabit || mkdir -p $(INSTALL_ROOT)/usr/share/e-sabit
+	-$(QINSTALL_PROGRAM) /home/by/Masaüstü/e-sabit/restorebutton.sh $(INSTALL_ROOT)/usr/share/e-sabit/restorebutton.sh
+	-: $(INSTALL_ROOT)/usr/share/e-sabit/restorebutton.sh
+
+uninstall_restorebutton: FORCE
+	-$(DEL_FILE) -r $(INSTALL_ROOT)/usr/share/e-sabit/restorebutton.sh
+	-$(DEL_DIR) $(INSTALL_ROOT)/usr/share/e-sabit/ 
+
+
+install: install_target install_desktop_file install_icon install_auto_start install_service install_backup install_restoreservice install_restorebutton  FORCE
+
+uninstall: uninstall_target uninstall_desktop_file uninstall_icon uninstall_auto_start uninstall_service uninstall_backup uninstall_restoreservice uninstall_restorebutton  FORCE
 
 FORCE:
 

@@ -29,7 +29,7 @@
 #include<QTextDocument>
 #include<QPrinter>
 #include<QTextEdit>
-
+#include<QRadioButton>
 namespace Ui {
 class MainWindow;
 }
@@ -50,12 +50,11 @@ public slots:
     QStringList listRemove(QStringList list, QString data);
     void iconActivated(QSystemTrayIcon::ActivationReason);
     void gizle();
-    void kontrol();
-    bool passwordKontrolSlot();
-    void versionKontrolSlot();
+    void kullaniciYedekleButtonSlot();
+    bool passwordKontrolSlot(QString kmt);
+    void widgetClose();
     QString myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon);
     void  widgetShow();
-    void ayarKaydetButtonSlot();
     void yedekStatus();
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -73,11 +72,11 @@ private:
     QWidget *qww;
     int boy=30;
 
-     bool copyState;
-     QString version;
-     QString user;
-     QString passwordstatus;
-     bool status;
+    bool copyState;
+    QString version;
+    QString user;
+    QString passwordstatus;
+    bool status;
 
     QStringList ayarlst;
     QTimer *timergizle;
@@ -87,9 +86,11 @@ private:
     QMenu* createMenu();
 
     QLineEdit *kullaniciDizinLineEdit;
-    QCheckBox *checkbox;
     int fnt=10;
     QLabel *labelYedekStatus;
+    QString yedekState="0";
+    QRadioButton *rb0;
+    QRadioButton *rb1;
 };
 
 #endif // MAINWINDOW_H

@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
  {
     trayIcon=new QSystemTrayIcon(this);
     //   this->resize(360,300);
-    setWindowTitle("e-sabit 2.0");
+    setWindowTitle("e-sabit 2.1");
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
    // qDebug()<<"boy:"<<screenGeometry.width()/34;
     boy=screenGeometry.width()/34;
@@ -81,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
       timergizle->start(1);
       labelYedekStatus=new QLabel();///ayar nesnesinden önce olmalıdır
       labelYedekStatus->setFixedSize(this->width(),boy);
+       rb0=new QRadioButton();
+       rb1=new QRadioButton();
       aw=ayar();
 
       aw->setEnabled(false);
@@ -93,79 +95,25 @@ MainWindow::MainWindow(QWidget *parent) :
         tw->addTab(aw,QIcon(":/icons/settings.svg"),"Ayarlar");
         tw->addTab(hakkinda(),QIcon(":/icons/lisans.svg"),"Lisans");
 
-
-     //   qDebug()<<fnt;
-
-        tw->setStyleSheet("Text-align:left; font-size:"+QString::number(fnt-2)+"px;");
-
-
-
-      //
-
+      tw->setStyleSheet("Text-align:left; font-size:"+QString::number(fnt-2)+"px;");
 
 }
 
-void MainWindow::kontrol()
+
+bool MainWindow::passwordKontrolSlot(QString kmt)
 {
-    status=true;
-    /********************password null text kontrol********************************/
-  /*   if(localPassword->text()=="")
-    {
-          QString sonuc=myMessageBox("e-sabit", "\n"
-                                                     "\nLütfen Şifre Giriniz..\n"
-                                                       "\n","","","tamam",QMessageBox::Critical);
-
-        status=false;
-        return;
-    }*/
-    /*********************sudo yetki kontrol*************************/
-   /*sudoYetkiKontolSlot();
-     if(sudoyetki=="0")
-    { QString sonuc=myMessageBox("e-sabit", "\n"
-                                            "\nLütfen Yetkili Bir Kullanıcı ile Kurulum Yapınız...\n"
-                                              "\n","","","tamam",QMessageBox::Critical);
-
-         status=false;
-        return;
-    }
-*/
-    /*************************şifre kontrol***********************/
-   passwordKontrolSlot();
-   /*if(passwordstatus=="0")
-    {
-       QString sonuc=myMessageBox("e-sabit", "\n"
-                                           "\nLütfen Şifrenizi Doğru Giriniz..\n"
-                                             "\n","","","tamam",QMessageBox::Critical);
-
-        status=false;
-       return;
-    }*/
-
-//return status;
-}
-
-bool MainWindow::passwordKontrolSlot()
-{
-    /***************password kontrol***************************/
-   system("pkexec  touch /usr/share/e-sabit/sabit");
+    system(kmt.toStdString().c_str());
     if(QFile::exists("/usr/share/e-sabit/sabit")==true)
-    {
-        status=status&&true;
-       /// passwordstatus="1";
+    {  
         system("rm -rf /usr/share/e-sabit/sabit");
-       // qDebug()<<"Şifre: doğru "<<passwordstatus;
+       // qDebug()<<"Şifre: doğru ";
+        return true;
     }else
     {
-        status=status&&false;
-       // passwordstatus="0";
-       // qDebug()<<"Şifre: yanlış "<<passwordstatus;
-      /*  QString sonuc=myMessageBox("e-sabit", "\n"
-                                            "\nLütfen Şifrenizi Doğru Giriniz..\n"
-                                              "\n","","","tamam",QMessageBox::Critical);
-*/
-
+      // qDebug()<<"Şifre: yanlış ";
+        return false;
     }
-
+return false;
 }
 QString MainWindow::myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon)
 {
@@ -174,7 +122,7 @@ QString MainWindow::myMessageBox(QString baslik, QString mesaj, QString evet, QS
    flags |= Qt::X11BypassWindowManagerHint;
 
     QMessageBox messageBox(this);
-   messageBox.setWindowFlags(flags);
+   //messageBox.setWindowFlags(flags);
     messageBox.setText(baslik+"\t\t\t");
     messageBox.setInformativeText(mesaj);
     QAbstractButton *evetButton;
@@ -186,30 +134,14 @@ QString MainWindow::myMessageBox(QString baslik, QString mesaj, QString evet, QS
     if(tamam=="tamam") tamamButton =messageBox.addButton(tr("Tamam"), QMessageBox::ActionRole);
 
     messageBox.setIcon(icon);
-    messageBox.show();
+    messageBox.exec();
     if(messageBox.clickedButton()==evetButton) return "evet";
-    if(messageBox.clickedButton()==hayirButton) return "hayır";
+    if(messageBox.clickedButton()==hayirButton) return "hayir";
     if(messageBox.clickedButton()==tamamButton) return "tamam";
     return "";
 }
 
-void MainWindow::versionKontrolSlot()
-{
-    /*********************version kontrol*****************************/
-    QString result="";
-    QStringList arguments;
-            arguments << "-c" << QString("uname -a|awk '{print $3}'");
-            QProcess process;
-            process.start("/bin/bash",arguments);
-             if(process.waitForFinished())
-    {
-        version = process.readAll();
-       //   result.chop(3);
-    }
 
-version=version.left(1);
-//qDebug()<<"version:"<<version;
-}
 
 MainWindow::~MainWindow()
 {
@@ -306,71 +238,40 @@ void MainWindow::listToFile(QString path,QStringList list, QString filename)
 
 void  MainWindow::gizle()
 {
-    //hide();
-   // qDebug()<<"deded";
     aw->setEnabled(false);
-     tw->setCurrentIndex(0);
+    tw->setCurrentIndex(0);
     QWidget::hide();
     timergizle->stop();
 
-  }
+}
 void  MainWindow::widgetShow()
 {
-
-    system("pkexec  touch /usr/share/e-sabit/sabit");
-    if(QFile::exists("/usr/share/e-sabit/sabit")==true)
+    if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit'"))
     {
-        system("rm -rf /usr/share/e-sabit/sabit");
-        // qDebug()<<"Şifre: doğru "<<passwordstatus;
         aw->setEnabled(true);
         tw->setCurrentIndex(1);
         this->showNormal();
-        //qDebug()<<"gösterildi..:";
     }
-    else{
-        //  qDebug()<<"kontrol yanlış"<<status;
-    }
-
-
 }
 
 QMenu* MainWindow::createMenu()
 {
-  // App can exit via Quit menu
- /* auto quitAction = new QAction("&Kapat", this);
-  connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
-  auto ayarAction = new QAction("&Ayarlar", this);
-  connect(ayarAction, &QAction::triggered, qApp, gizle());
-*/
-
+    auto closeAction = new QAction(tr("Ka&pat"), this);
+    connect( closeAction, SIGNAL(triggered()), this, SLOT(widgetClose()));
 
     auto minimizeAction = new QAction(tr("Gi&zle"), this);
     connect(minimizeAction, &QAction::triggered, this, &QWidget::hide);
 
-   /* auto maximizeAction = new QAction(tr("Ma&ximize"), this);
-    connect(maximizeAction, &QAction::triggered, this, &QWidget::showMaximized);
-*/
     auto restoreAction = new QAction(tr("&Ayarlar"), this);
-  //  connect(restoreAction, &QAction::triggered, this, &QWidget::showNormal);
- connect( restoreAction, SIGNAL(triggered()), this, SLOT(widgetShow()));
-   /// auto quitAction = new QAction(tr("&Kapat"), this);
-   /// connect(quitAction, &QAction::triggered, qApp, &QCoreApplication::quit);
+    connect( restoreAction, SIGNAL(triggered()), this, SLOT(widgetShow()));
+
     auto menu = new QMenu(this);
-    //menu->addAction(quitAction)
-
-
+ //   menu->addAction(closeAction);
     menu->addAction(minimizeAction);
-    //menu->addAction(maximizeAction);
     menu->addAction(restoreAction);
     menu->addSeparator();
-    //menu->addAction(quitAction);
 
-   // trayIcon = new QSystemTrayIcon(this);
-    //trayIcon->setContextMenu(trayIconMenu);
-
-    //;
-
-  return menu;
+    return menu;
 }
 
 void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
@@ -384,11 +285,21 @@ void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
   }
 }
 
+void MainWindow::widgetClose()
+{
+    QString sonuc=myMessageBox("Uyarı", "\nUygulama Kapatılacak. Önerilmemektedir! Emin misiniz?"
+             ,"evet","hayir","",QMessageBox::Question);
+    if (sonuc == "evet"){
+
+        if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit'"))
+        {
+
+        }
+    }
+}
 
 void MainWindow::WidgetClosed()
 {
-   // aw->setEnabled(false);
-  //      localPassword->setText("");
         tw->setCurrentIndex(0);
         QWidget::hide();
 }

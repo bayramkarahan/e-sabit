@@ -22,128 +22,106 @@
 #include<QProgressDialog>
 #include<QToolButton>
 #include<QFileInfo>
+#include<QButtonGroup>
+#include<QRadioButton>
 
 #ifndef AYAR_H
 #define AYAR_H
+void MainWindow::kullaniciYedekleButtonSlot()
+{
+    bool kullanicidizin=false;
+    if(kullaniciDizinLineEdit->text()!="") kullanicidizin=true;
+    if(!(kullanicidizin)){
+        myMessageBox("Uyarı", "\n\nKullanıcı Ayarları Kaydedilmemiş..\n\n","","","tamam",QMessageBox::Warning);
+        return;
+    }
+    QString sonuc=myMessageBox("Uyarı", "\n\nSeçili "
+             +kullaniciDizinLineEdit->text().split("/")[2]
+             +" Kullanıcı Bilgileri Yedeklenecek! Emin misiniz?"
+            "\n\nBu işlem Seçilli Kullanıcının Dizininin Boyutuna ve Bilgisayarınızın Performansına Bağlı Olarak Bir Zaman Alacaktır.\n"
+            "\nİşlemler Tamamlana Kadar Bekleyiniz!","evet","hayir","",QMessageBox::Question);
+    if (sonuc == "evet"){
+        if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/backup.sh'"))
+        {
+            myMessageBox("", "\n\nKullanıcı Bilgileri Yedeklendi..\n","","","tamam",QMessageBox::Information);
+            yedekStatus();///yedek durumunu tespit alanı
+        }
+    }
+}
+
 void MainWindow::yedekStatus()
 {
-    if(kullaniciDizinLineEdit->text()!=""&&QFile::exists("/var/backups/"+kullaniciDizinLineEdit->text().split("/")[2])==true){
-        QDateTime local(QFileInfo("/var/backups/"+kullaniciDizinLineEdit->text().split("/")[2]).lastRead());
-       // qDebug() << "Local time is:" << local.toString("yyyy-MM-dd HH:mm:ss");
-       labelYedekStatus->setText("Kullanıcı Yedeği Var\tYedeklenme Zamanı: "+local.toString("yyyy-MM-dd HH:mm:ss"));
-       labelYedekStatus->setStyleSheet("Text-align:center; background-color:rgba(0, 255, 0, 100); font-size:"+QString::number(fnt-2)+"px;");
+    if(kullaniciDizinLineEdit->text()!=""&&kullaniciDizinLineEdit->text().split("/").count()>1)
+    {
+        if(kullaniciDizinLineEdit->text()!=""&&QFile::exists("/var/backups/e-sabit/"+kullaniciDizinLineEdit->text().split("/")[2])==true){
+            QDateTime local(QFileInfo("/var/backups/e-sabit/"+kullaniciDizinLineEdit->text().split("/")[2]).lastRead());
+            // qDebug() << "Local time is:" << local.toString("yyyy-MM-dd HH:mm:ss");
+            labelYedekStatus->setText("Kullanıcı Yedeği Var\tYedeklenme Zamanı: "+local.toString("yyyy-MM-dd HH:mm:ss"));
+            labelYedekStatus->setStyleSheet("Text-align:center; background-color:rgba(0, 255, 0, 100); font-size:"+QString::number(fnt-2)+"px;");
 
+        }
+        else{
+            labelYedekStatus->setText("Kullanıcı Yedeği Yok! --> Kullanıcı Yedekle Seçeneği İle Yedek Alın..");
+            labelYedekStatus->setStyleSheet("Text-align:center; background-color:rgba(255, 0, 0, 100); font-size:"+QString::number(fnt-2)+"px;");
+
+        }
     }
-   else{
-       labelYedekStatus->setText("Kullanıcı Yedeği Yok! --> Kullanıcı Yedekle Seçeneği İle Yedek Alın..");
-       labelYedekStatus->setStyleSheet("Text-align:center; background-color:rgba(255, 0, 0, 100); font-size:"+QString::number(fnt-2)+"px;");
-
-   }
 
 }
 
-void MainWindow::ayarKaydetButtonSlot()
-{
-    /**************************************************************/
-        bool drmm1=false;
-         if(kullaniciDizinLineEdit->text()=="")
-       {
-           QMessageBox::information(this,"E-Sabit",
-                                   "\n"
-                                   "\nKullanıcı Ayarları Seçilmemiş..\n"
-                                    "Lütfen Sabitlemek İstenen Kullanıcı Ayarlarını Giriniz.."
-                                   "\n");
-           drmm1=true;
-       }
-       if (drmm1) return;
-
-/***********************e-sabit.conf oluşturuluyor***********************************/
-       system("mv /usr/share/e-sabit/e-sabit.conf /usr/share/e-sabit/e-sabit.conf.old");
-       QStringList ayarlist;
-      ayarlist.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
-      ayarlist.append("copyState|"+QString::number(copyState));
-    //  ayarlist.append("kullaniciSifre|"+kullaniciSifreLineEdit->text());
-      listToFile("/usr/share/e-sabit/",ayarlist,"e-sabit.conf");
-      /********************file permission*************************/
-
-          QString yuser=kullaniciDizinLineEdit->text().split("/")[2];
-
- /*******************************restore.sh oluştuluyor**************/
-           system("mv /usr/share/e-sabit/restore.sh /usr/share/e-sabit/restore.sh.old");
-          QStringList restorelist;
-          restorelist.append("#!/bin/bash");
-          restorelist.append("rsync -apoglr --delete /var/backups/"+yuser+"/ /home/"+yuser+"/");
-          restorelist.append("chown -R "+yuser+":"+yuser+" /home/"+yuser+"/");
-          restorelist.append("chmod -R 744 /home/"+yuser+"/");
-          listToFile("/usr/share/e-sabit/",restorelist,"restore.sh");
-
-
-/***************************backup.sh oluşturuldu******************************************/
-         system("mv /usr/share/e-sabit/backup.sh /usr/share/e-sabit/backup.sh.old");
-          QStringList backuplist;
-          backuplist.append("#!/bin/bash");
-           backuplist.append("mkdir /var/backups");
-          backuplist.append("rsync -apoglr --delete /home/"+yuser+"/ /var/backups/"+yuser+"/");
-          listToFile("/usr/share/e-sabit/",backuplist,"backup.sh");
-         /******************************************************************/
-          system("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&chown root /usr/share/e-sabit/restore.sh&&chown root /usr/share/e-sabit/backup.sh&&chmod 744 /usr/share/e-sabit/restore.sh&&chmod 744 /usr/share/e-sabit/backup.sh'");
-           if(QFile::exists("/usr/share/e-sabit/sabit")==true)
-           {
-
-               system("rm -rf /usr/share/e-sabit/sabit");
-               //qDebug()<<"Şifre: doğru-kaydet "
-           }else
-           {
-                //qDebug()<<"Şifre: yanlış-kaydet "
-               system("rm -rf /usr/share/e-sabit/restore.sh");
-               system("rm -rf /usr/share/e-sabit/backup.sh");
-               system("rm -rf /usr/share/e-sabit/e-sabit.conf");
-               system("rm -rf /usr/share/e-sabit/sabit");
-
-               system("mv /usr/share/e-sabit/e-sabit.conf.old /usr/share/e-sabit/e-sabit.conf");
-               system("mv /usr/share/e-sabit/restore.sh.old /usr/share/e-sabit/restore.sh");
-               system("mv /usr/share/e-sabit/backup.sh.old /usr/share/e-sabit/backup.sh");
-               QStringList ayarlstcopy=fileToList("/usr/share/e-sabit/","e-sabit.conf");
-
-               if(listGetLine(ayarlstcopy,"copyState")!="")
-               {
-                  QString strcopyState=listGetLine(ayarlstcopy,"copyState").split("|")[1];
-                   //qDebug()<<strcopyState;
-                copyState=strcopyState.toInt();
-                checkbox->setChecked(copyState);
-               }
-
-               if(listGetLine(ayarlstcopy,"kullaniciDizin")!="")
-                   kullaniciDizinLineEdit->setText(listGetLine(ayarlst,"kullaniciDizin").split("|")[1]);
-                   else
-                   kullaniciDizinLineEdit->setText("");
-
-           }
-          /******************************************************************/
-      QString sonuc=myMessageBox("E-Sabit", "\n"
-                                          "\nAyarlar Kaydedildi..\n"
-                                            "\n","","","tamam",QMessageBox::Information);
-
-yedekStatus();///yedek durumunu tespit alanı
-}
 QWidget *MainWindow::ayar()
 {
-    
-
     QWidget *ayarPage=new QWidget();
-  checkbox = new QCheckBox("Her Açılışta Kullanıcı Bilgileri Yedekten Yüklensin.",ayarPage);
+    QButtonGroup *buttonGroup = new QButtonGroup(ayarPage);
+    rb0->setText("Her Açılışta Kullanıcı Bilgilerini Yedekten Yükle");
+    rb1->setText("İşlem Yapma");
+    rb1->setChecked(true);
+
+    buttonGroup->addButton(rb0, 0);
+    buttonGroup->addButton(rb1, 1);
+    connect(rb0, &QRadioButton::clicked, [=]() {
+      //  QString sonuc=myMessageBox("E-Sabit", "\n\nAyarlar Kaydedildi..\n\n","evet","hayir","tamam",QMessageBox::Information);
+       //qDebug()<<"rb1 click";
+        yedekState="1";
+        system("rm -rf /usr/share/e-sabit/e-sabit.conf");
+        QStringList ayar_lst;
+        ayar_lst=listRemove(ayar_lst,"yedekState");
+        ayar_lst.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
+        ayar_lst.append("yedekState|"+yedekState);
+        listToFile("/usr/share/e-sabit/",ayar_lst,"e-sabit.conf");
+        if(kullaniciDizinLineEdit->text()!=""&&kullaniciDizinLineEdit->text().split("/").count()>1)
+        {
+            if(kullaniciDizinLineEdit->text()!=""&&QFile::exists("/var/backups/e-sabit/"+kullaniciDizinLineEdit->text().split("/")[2])!=true){
+                kullaniciYedekleButtonSlot();///Kullanıcı seçildiği için yedekleme soruluyor
+            }
+        }
+        yedekStatus();///yedek durumunu test eder
+    });
+    connect(rb1, &QRadioButton::clicked, [=]() {
+        //qDebug()<<"rb2 click";
+        yedekState="0";
+        system("rm -rf /usr/share/e-sabit/e-sabit.conf");
+        QStringList ayar_lst;
+        ayar_lst=listRemove(ayar_lst,"yedekState");
+        ayar_lst.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
+        ayar_lst.append("yedekState|"+yedekState);
+        listToFile("/usr/share/e-sabit/",ayar_lst,"e-sabit.conf");
+         yedekStatus();///yedek durumunu test eder
+     });
 
      QFont f2( "Arial", fnt-4, QFont::Normal);
     /*******************************************************/
     QStringList ayarlst=fileToList("/usr/share/e-sabit/","e-sabit.conf");
     /*******************************************/
 
-               /*************************************************/
-    if(listGetLine(ayarlst,"copyState")!="")
+    if(listGetLine(ayarlst,"yedekState")!="")
     {
-       QString strcopyState=listGetLine(ayarlst,"copyState").split("|")[1];
-        //qDebug()<<strcopyState;
-     copyState=strcopyState.toInt();
+        yedekState=listGetLine(ayarlst,"yedekState").split("|")[1];
+        if(yedekState=="1")
+            rb0->setChecked(true);
+        else
+            rb1->setChecked(true);
+
     }
      /********************************************************/
 
@@ -162,59 +140,8 @@ QWidget *MainWindow::ayar()
     if(listGetLine(ayarlst,"kullaniciDizin")!="")
         kullaniciDizinLineEdit->setText(listGetLine(ayarlst,"kullaniciDizin").split("|")[1]);
 
-
-
     connect(kullaniciYedekleButton, &QPushButton::clicked, [=]() {
-        bool backup= QFile::exists("/usr/share/e-sabit/backup.sh");
-        bool restore=QFile::exists("/usr/share/e-sabit/restore.sh");
-        bool esabit=QFile::exists("/usr/share/e-sabit/e-sabit.conf");
-        bool kullanicidizin=false;
-        if(kullaniciDizinLineEdit->text()!="") kullanicidizin=true;
-        if(!(backup&&restore&&esabit&&kullanicidizin))
-        {
-            QMessageBox messageBox(this);
-            messageBox.setText("Uyarı");
-
-            messageBox.setInformativeText("Kullanıcı Ayarları Kaydedilmemiş..\n"
-                                          "Lütfen Ayarları Tamamlayınız..");
-            QAbstractButton *evetButton =messageBox.addButton(tr("Tamam"), QMessageBox::ActionRole);
-            // QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-            messageBox.setIcon(QMessageBox::Warning);
-            messageBox.exec();
-            return;
-        }
-
-        QMessageBox messageBox(this);
-        messageBox.setText("Uyarı\t\t\t");
-        messageBox.setInformativeText("Seçili Kullanıcı Bilgileri Yedeklenecek! Emin misiniz?\n"
-                                      "Bu işlem Seçilli Kullanıcının Dizininin Boyutuna ve Bilgisayarınızın Performansına Bağlı Olarak Bir Zaman Alacaktır.\n"
-                                      "\nİşlemler Tamamlana Kadar Bekleyiniz!");
-        QAbstractButton *evetButton =messageBox.addButton(tr("Evet"), QMessageBox::ActionRole);
-        QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-        messageBox.setIcon(QMessageBox::Question);
-        messageBox.exec();
-        if (messageBox.clickedButton() == evetButton)
-        {
-
-            system("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/backup.sh'");
-            if(QFile::exists("/usr/share/e-sabit/sabit")==true)
-            {
-                system("rm -rf /usr/share/e-sabit/sabit");
-                //qDebug()<<"Şifre: doğru-kaydet "
-                QMessageBox messageBox1(this);
-                messageBox1.setInformativeText("\n\nKullanıcı Bilgileri Yedeklendi..\n");
-                QAbstractButton *evetButton1 =messageBox1.addButton(tr("Tamam"), QMessageBox::ActionRole);
-                // QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-                messageBox1.setIcon(QMessageBox::Information);
-                messageBox1.exec();
-
-                yedekStatus();///yedek durumunu tespit alanı
-
-            }
-        }
-
-
-
+kullaniciYedekleButtonSlot();
     });
     /*********************************************************************/
 
@@ -228,52 +155,66 @@ QWidget *MainWindow::ayar()
 
 
     connect(kullaniciDizinSelectButton, &QPushButton::clicked, [=]() {
-
         QFileDialog dialog(this);
         dialog.setFileMode(QFileDialog::Directory);
         QString dir = QFileDialog::getExistingDirectory(this, tr("Klasör Aç"),
                                                         "/home",
                                                         QFileDialog::ShowDirsOnly
                                                         | QFileDialog::DontResolveSymlinks);
-/***************************önemli bölüm*************************************************/
+        /***************************önemli bölüm*************************************************/
         if(!dir.contains("/home/", Qt::CaseInsensitive))
             return;
         if(dir.contains("/home/", Qt::CaseInsensitive)&&dir.split("/")[2]!="")
-           kullaniciDizinLineEdit->setText("/home/"+dir.split("/")[2]);
+            kullaniciDizinLineEdit->setText("/home/"+dir.split("/")[2]);
         else return;
+        /****************************************************************************************/
+        QString sonuc=myMessageBox("Uyarı", "\nSeçtiğiniz "+kullaniciDizinLineEdit->text().split("/")[2]
+                                   +" Kullanıcı Dizinine Göre Ayarlar Yapılandırılacak."
+                                            "\n\n İşlemden  Emin Misiniz?","evet","hayir","",QMessageBox::Question);
+        if (sonuc == "evet") {
+            /*****************************************************************/
+            system("rm -rf /usr/share/e-sabit/e-sabit.conf");
+            QStringList ayarlist;
+            ayarlist.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
+            ayarlist.append("yedekState|1");
+            listToFile("/usr/share/e-sabit/",ayarlist,"e-sabit.conf");
+            QString yuser=kullaniciDizinLineEdit->text().split("/")[2];
+            rb0->setChecked(true);
+            QString sonuc=myMessageBox("E-Sabit", "\n"
+                                                  "\nAyarlar Kaydedildi..\n"
+                                                  "\n","","","tamam",QMessageBox::Information);
 
-        //kullaniciDizinLineEdit->setText(dir);
 
-
-/****************************************************************************************/
-
-        QMessageBox messageBox(this);
-        messageBox.setText("Uyarı");
-
-        messageBox.setInformativeText("Seçtiğiniz Kullanıcı Dizinine Göre Ayarlar Yapılandırılacak. \n İşlemden  Emin Misiniz?");
-        QAbstractButton *evetButton =messageBox.addButton(tr("Evet"), QMessageBox::ActionRole);
-        QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-        messageBox.setIcon(QMessageBox::Question);
-        messageBox.exec();
-        if (messageBox.clickedButton() == evetButton) {
-            ayarKaydetButtonSlot();
-        }
-        if (messageBox.clickedButton() == hayirButton) {
-            QStringList ayarlstcopy=fileToList("/usr/share/e-sabit/","e-sabit.conf");
-            if(listGetLine(ayarlstcopy,"copyState")!="")
+            if(kullaniciDizinLineEdit->text()!=""&&kullaniciDizinLineEdit->text().split("/").count()>1)
             {
-                QString strcopyState=listGetLine(ayarlstcopy,"copyState").split("|")[1];
-                //qDebug()<<strcopyState;
-                copyState=strcopyState.toInt();
-                checkbox->setChecked(copyState);
+                if(kullaniciDizinLineEdit->text()!=""&&QFile::exists("/var/backups/e-sabit/"+kullaniciDizinLineEdit->text().split("/")[2])!=true){
+                    kullaniciYedekleButtonSlot();///Kullanıcı seçildiği için yedekleme soruluyor
+                }
             }
-             if(listGetLine(ayarlstcopy,"kullaniciDizin")!="")
+            yedekStatus();///yedek durumunu tespit alanı
+            /*************************************************************/
+
+
+        }
+        if (sonuc=="hayir") {
+            QStringList ayarlstcopy=fileToList("/usr/share/e-sabit/","e-sabit.conf");
+            if(listGetLine(ayarlst,"yedekState")!="")
+            {
+                yedekState=listGetLine(ayarlst,"yedekState").split("|")[1];
+                if(yedekState=="1")
+                    rb0->setChecked(true);
+                else
+                    rb1->setChecked(true);
+
+            }
+            if(listGetLine(ayarlstcopy,"kullaniciDizin")!="")
                 kullaniciDizinLineEdit->setText(listGetLine(ayarlstcopy,"kullaniciDizin").split("|")[1]);
             else
                 kullaniciDizinLineEdit->setText("");
         }
 
-     });
+    });
+
 
 /************************************************************************/
     QToolButton *yedekKullaniciYukleButton= new QToolButton;
@@ -287,162 +228,27 @@ QWidget *MainWindow::ayar()
     yedekKullaniciYukleButton->setText("Yedeği Geri Yükle");
 
      /************************************************************************/
-
      connect(yedekKullaniciYukleButton, &QPushButton::clicked, [=]() {
-         bool backup= QFile::exists("/usr/share/e-sabit/backup.sh");
-         bool restore=QFile::exists("/usr/share/e-sabit/restore.sh");
-         bool esabit=QFile::exists("/usr/share/e-sabit/e-sabit.conf");
-         bool kullanicidizin=false;
+           bool kullanicidizin=false;
          if(kullaniciDizinLineEdit->text()!="") kullanicidizin=true;
-         if(!(backup&&restore&&esabit&&kullanicidizin))
-         {
-             QMessageBox messageBox(this);
-             messageBox.setText("Uyarı");
-
-             messageBox.setInformativeText("Kullanıcı Ayarları Kaydedilmemiş..\n"
-                                           "Lütfen Ayarları Tamamlayınız..");
-             QAbstractButton *evetButton =messageBox.addButton(tr("Tamam"), QMessageBox::ActionRole);
-             // QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-             messageBox.setIcon(QMessageBox::Warning);
-             messageBox.exec();
+         if(!(kullanicidizin)){
+             myMessageBox("Uyarı", "\n\nKullanıcı Ayarları Kaydedilmemiş..\n\n","","","tamam",QMessageBox::Warning);
              return;
          }
-
-         QMessageBox messageBox(this);
-         messageBox.setText("Uyarı\t\t\t");
-         messageBox.setInformativeText("Seçili Kullanıcı Bilgileri Yedekten Yüklenecek! Emin misiniz?\n"
-                                       "Bu işlem Seçilli Kullanıcının Dizininin Boyutuna ve Bilgisayarınızın Performansına Bağlı Olarak Bir Zaman Alacaktır.\n"
-                                       "\nİşlemler Tamamlana Kadar Bekleyiniz!");
-         QAbstractButton *evetButton =messageBox.addButton(tr("Evet"), QMessageBox::ActionRole);
-         QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-         messageBox.setIcon(QMessageBox::Question);
-         messageBox.exec();
-         if (messageBox.clickedButton() == evetButton)
-         {
-
-             system("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/restore.sh'");
-             if(QFile::exists("/usr/share/e-sabit/sabit")==true)
+         QString sonuc=myMessageBox("Uyarı", "\n\nSeçili "
+                                    +kullaniciDizinLineEdit->text().split("/")[2]
+                                    +" Kullanıcı Bilgileri Yedekten Yüklenecek! Emin misiniz?\n"
+                                             "\n\nBu işlem Seçilli Kullanıcının Dizininin Boyutuna ve Bilgisayarınızın Performansına Bağlı Olarak Bir Zaman Alacaktır.\n"
+                                             "\nİşlemler Tamamlana Kadar Bekleyiniz!","evet","hayir","",QMessageBox::Question);
+         if (sonuc == "evet"){
+             if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/restorebutton.sh'"))
              {
-                 system("rm -rf /usr/share/e-sabit/sabit");
-                 //qDebug()<<"Şifre: doğru-kaydet "
-                 QMessageBox messageBox1(this);
-                 messageBox1.setInformativeText("\n\nKullanıcı Bilgileri Geri Yüklendi..\n");
-                 QAbstractButton *evetButton1 =messageBox1.addButton(tr("Tamam"), QMessageBox::ActionRole);
-                 // QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-                 messageBox1.setIcon(QMessageBox::Information);
-                 messageBox1.exec();
+                 myMessageBox("", "\n\nKullanıcı Bilgileri Geri Yüklendi..\n","","","tamam",QMessageBox::Information);
+                 yedekStatus();///yedek durumunu tespit alanı
              }
          }
 
-
-
-
      });
-
-
-     QFont f1( "Arial", 8, QFont::Normal);
-    checkbox->setFont(f1);
-    checkbox->setChecked(copyState);
-   /// qDebug()<<"copystate1"<<copyState;
-    connect(checkbox, &QCheckBox::clicked, [=]() {
-        copyState=checkbox->checkState();
-        if(kullaniciDizinLineEdit->text()=="")
-        {
-           // qDebug()<<"kullanıcı seçilmemiş";
-            QMessageBox messageBox(this);
-            messageBox.setText("Uyarı");
-
-            messageBox.setInformativeText("Sabitlenecek Kullanıcı Seçilmemiş\n");
-            QAbstractButton *evetButton =messageBox.addButton(tr("Tamam"), QMessageBox::ActionRole);
-           // QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-            messageBox.setIcon(QMessageBox::Warning);
-            messageBox.exec();
-            copyState=!copyState;
-             checkbox->setChecked(copyState);
-
- return;
-        }
-
-
-        if(copyState)
-        {
-            QMessageBox messageBox(this);
-            messageBox.setText("Uyarı");
-
-            messageBox.setInformativeText("Her Açılışta kullanıcı Yedeklenecek Şekilde Yapılandırılacaktır. \n İşlemden  Emin Misiniz?");
-            QAbstractButton *evetButton =messageBox.addButton(tr("Evet"), QMessageBox::ActionRole);
-            QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-            messageBox.setIcon(QMessageBox::Question);
-            messageBox.exec();
-            if (messageBox.clickedButton() == evetButton) {
-                system("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&systemctl enable e-sabit.service&&systemctl start e-sabit.service&&systemctl daemon-reload'");
-                if(QFile::exists("/usr/share/e-sabit/sabit")==true)
-                {
-                    system("rm -rf /usr/share/e-sabit/sabit");
-                    //qDebug()<<"Şifre: doğru-kaydet "
-                    /***********************e-sabit.conf oluşturuluyor***********************************/
-                    system("mv /usr/share/e-sabit/e-sabit.conf /usr/share/e-sabit/e-sabit.conf.old");
-                    QStringList ayarlist;
-                    ayarlist.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
-                    ayarlist.append("copyState|"+QString::number(copyState));
-                     listToFile("/usr/share/e-sabit/",ayarlist,"e-sabit.conf");
-                    /********************file permission*************************/
-                    QFile file("/user/share/e-sabit/e-sabit.conf");
-                    if (file.open(QFile::ReadWrite)){
-                        if(!file.setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser|QFileDevice::ExeUser|
-                                                QFileDevice::WriteOwner | QFileDevice::ReadOwner|QFileDevice::ExeOwner|
-                                                QFileDevice::WriteGroup | QFileDevice::ReadGroup|QFileDevice::ExeGroup|
-                                                QFileDevice::WriteOther | QFileDevice::ReadOther|QFileDevice::ExeOther)){
-                            qDebug()<< "Error in permissions";
-                        }
-                        file.close();
-                    }
-
-
-                }
-                else
-                {
-                    copyState=!(copyState);
-                     checkbox->setChecked(copyState);
-                }
-            }
-             if (messageBox.clickedButton() == hayirButton) {
-                 copyState=!(copyState);
-                  checkbox->setChecked(copyState);
-             }
-
-        }
-       else
-        {
-            QMessageBox messageBox(this);
-            messageBox.setText("Uyarı");
-            messageBox.setInformativeText("Her Açılışta kullanıcı Yedeklenmeyecek Şekilde Yapılandırılacaktır. \n İşlemden  Emin Misiniz?");
-            QAbstractButton *evetButton =messageBox.addButton(tr("Evet"), QMessageBox::ActionRole);
-            QAbstractButton *hayirButton =messageBox.addButton(tr("Hayır"), QMessageBox::ActionRole);
-            messageBox.setIcon(QMessageBox::Question);
-            messageBox.exec();
-            if (messageBox.clickedButton() == evetButton) {
-                system("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&systemctl stop e-sabit.service&&systemctl disable e-sabit.service&&systemctl daemon-reload'");
-                if(QFile::exists("/usr/share/e-sabit/sabit")==true)
-                {
-                    system("rm -rf /usr/share/e-sabit/sabit");
-                    //qDebug()<<"Şifre: doğru-kaydet "
-                }
-                else
-                {
-                    copyState=!(copyState);
-                     checkbox->setChecked(copyState);
-                }
-            }
-            if (messageBox.clickedButton() == hayirButton) {
-                copyState=!(copyState);
-                 checkbox->setChecked(copyState);
-            }
-
-        }
-
-        // qDebug()<<copyState;
-});
 
 
     QToolButton *helpButton= new QToolButton;
@@ -466,14 +272,14 @@ QWidget *MainWindow::ayar()
         doc->setHtml("<center><img  src=\":/icons/use.png\" /></center> "
                        "<br/><b>1-</b> <img src=\":/icons/selectdirectory.png\" />."
                       "<br/>Sabitlemek istediğiniz kullanıcının ev dizinini seçileceğimiz bölüm."
-                     " Bu kullanıcı ev dizini seçildiğinde sizden yetkili kullanıcı şifresi istenecektir."
+                     "Kullanıcı dizini seçilgiğinde <b>2.</b> adım otomatik seçilir ve kullanıcı yedeklemesi için size öneride bulunacaktır."
                       "<br/><br/><b>2-</b> <img src=\":/icons/selectcheckbox.png\" />"
                       "<br/>Sistem her açıldığında daha önceden yedeklenmiş kullanıcı dizinini kullanıcı "
-                     "ayarlarıyla değiştirilmesini sağlayan seçenektir. İlk kurulumda pasif durumdadır. "
+                     "ayarlarıyla değiştirilmesini sağlayan seçenektir. <b>İşlem Yapma</b> seçeneği seçilerek pasif duruma getirilebilir. "
                      "Bilişim sınıfı, internet kafe vb. ortamlarda bu seçenek seçilerek her açılışta kullanıcı ayarları sıfırlanabilir."
                      "<br/><b>Kişisel kulladığımız bilgisayarda bu seçeneğin seçilmesi tavsiye edilmemektedir.</b>"
                       "<br/><br/><b>3-</b> <img src=\":/icons/backup.png\" />"
-                      "<br/>Seçilmiş kullanıcı dizini /var/backups/ altında yedekleyen seçenektir."
+                      "<br/>Seçilmiş kullanıcı dizini /var/backups/e-sabit/ altında yedekleyen seçenektir."
                      "Sistemde değişiklik yapıldığında mutlaka bu seçenekle yedek güncellenmelidir."
                      "Kullanıcı yedeklenirken bilgisayarın performansı ve kullanıcı dizin boyutuna göre bir zaman alacaktır."
                      "Yedekleme tamamlandı mesajına kadar bilgisayarda hiç bir işlem yapılmadan beklenmelidir."
@@ -503,7 +309,7 @@ QWidget *MainWindow::ayar()
          vbox->addLayout(hbox1);
          QDialog * d1 = new QDialog();
          d1->setWindowTitle("Yardım Penceresi");
-         d1->setFixedSize(QSize(boy*27,boy*20.5));
+         d1->setFixedSize(QSize(boy*27,boy*21));
          auto appIcon = QIcon(":/icons/e-sabit.svg");
          d1->setWindowIcon(appIcon);
 
@@ -527,15 +333,17 @@ QWidget *MainWindow::ayar()
 
     layout->addWidget(kullaniciDizinLineEdit, 10,1,1,1);
     layout->addWidget(kullaniciDizinSelectButton, 10,2,1,1);
-
-     layout->addWidget(checkbox,20,0,1,3);
+    layout->addWidget(rb0,15,0,1,3);
+    layout->addWidget(rb1,16,0,1,3);
     QHBoxLayout *layout1 = new QHBoxLayout;
-         layout1->addWidget(kullaniciYedekleButton);
-         layout1->addWidget(yedekKullaniciYukleButton);
-         layout1->addWidget(helpButton);
-         layout->addLayout(layout1, 30, 0,1,3,Qt::AlignHCenter);
 
-        layout->addWidget(labelYedekStatus, 35, 0,1,3,Qt::AlignHCenter);
+
+    layout1->addWidget(kullaniciYedekleButton);
+    layout1->addWidget(yedekKullaniciYukleButton);
+    layout1->addWidget(helpButton);
+    layout->addLayout(layout1, 35, 0,1,3,Qt::AlignHCenter);
+
+    layout->addWidget(labelYedekStatus, 30, 0,1,3,Qt::AlignHCenter);
 
 
 ///layout->setColumnStretch(6, 255);
