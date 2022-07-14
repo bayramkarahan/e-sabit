@@ -30,14 +30,14 @@ QWidget *MainWindow::giris()
     pardusLogo->setScaledContents(true);
 
     auto *sat1=new QLabel(girisPage);
-    sat1->setText("1- Linux'da Kullanıcı Bilgilerini Değişmez Hale Getiren Uygulamadır.");
+    sat1->setText("1- Kullanıcı Bilgilerini Değişmez Hale Getiren Uygulamadır.");
 
     auto *sat2=new QLabel(girisPage);
     sat2->setText("2- Uygulama Debian(Pardus) tabanlı dağıtımlar için yazılmıştır.");
 
     auto *sat3=new QLabel(girisPage);
     sat3->setWordWrap(true);
-    sat3->setFixedSize(this->width(),boy);
+    sat3->setFixedSize(this->width(),boy*1.5);
     sat3->setText("3- Uygulama; Bilişim sınıf, internet kafe, kütüphane vb. halka açık alanlar"
                   " için  kullanılan bilgisayarların ayarlarını sabitlemek için yazılmıştır.");
 
