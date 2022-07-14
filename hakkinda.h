@@ -32,9 +32,7 @@ QWidget *MainWindow::hakkinda()
 
    auto *hak=new QLabel(hakkindaPage);
 
-    hak->setText("Bu Uygulama Kullanıcı Hesabını Sabitleme Amaçlı Yazılmıştır."
-                 "\n"
-                   "\n   Copyright (C) 2022 by Bayram KARAHAN                                     "
+    hak->setText( "\n   Copyright (C) 2022 by Bayram KARAHAN                                     "
                  "\n\n   <bayramk@gmail.com>  <bayramkarahan.blogspot.com>                                                    "
                    "\n\thttps://github.com/bayramkarahan/e-sabit                                                                         "
                   "\n\n   This program is free software; you can redistribute it and/or modify    "

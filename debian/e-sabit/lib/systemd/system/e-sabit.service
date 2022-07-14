@@ -1,0 +1,11 @@
+ [Unit]
+Description=e-sabit Başlatıldı.
+After=multi-user.target
+
+[Service]
+Type=simple
+Environment=export DISPLAY=:0
+ExecStart=/usr/share/e-sabit/restoreservice.sh
+
+[Install]
+WantedBy=multi-user.target

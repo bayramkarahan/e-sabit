@@ -136,6 +136,7 @@ QWidget *MainWindow::ayar()
     kullaniciYedekleButton->setText("Kullanıcı Yedekle");
 
     kullaniciDizinLineEdit=new QLineEdit(ayarPage);
+    kullaniciDizinLineEdit->setReadOnly(true);
     kullaniciDizinLineEdit->setFixedSize(boy*6,boy);
     if(listGetLine(ayarlst,"kullaniciDizin")!="")
         kullaniciDizinLineEdit->setText(listGetLine(ayarlst,"kullaniciDizin").split("|")[1]);
