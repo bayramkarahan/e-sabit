@@ -39,22 +39,15 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-virtual void closeEvent ( QCloseEvent * event );
 
 public slots:
 
-    void  WidgetClosed();
     void listToFile(QString path, QStringList list, QString filename);
     QStringList fileToList(QString path,QString filename);
     QString listGetLine(QStringList list, QString data);
     QStringList listRemove(QStringList list, QString data);
-    void iconActivated(QSystemTrayIcon::ActivationReason);
-    void gizle();
     void kullaniciYedekleButtonSlot();
-    bool passwordKontrolSlot(QString kmt);
-    void widgetClose();
-    QString myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon);
-    void  widgetShow();
+     QString myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon);
     void yedekStatus();
 public:
     explicit MainWindow(QWidget *parent = nullptr);

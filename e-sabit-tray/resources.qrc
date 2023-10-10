@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/e-sabit.svg</file>
+    </qresource>
+</RCC>

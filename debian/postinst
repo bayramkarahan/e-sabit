@@ -1,5 +1,5 @@
 #!/bin/sh
-chmod 777 /usr/share/e-sabit
+#chmod 777 /usr/share/e-sabit
 chmod 755 /usr/share/e-sabit/restorebutton.sh
 chmod 755 /usr/share/e-sabit/restoreservice.sh
 chmod 755 /usr/share/e-sabit/backup.sh

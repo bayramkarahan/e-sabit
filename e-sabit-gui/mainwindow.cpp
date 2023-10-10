@@ -44,12 +44,10 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
-    trayIcon=new QSystemTrayIcon(this);
-    //   this->resize(360,300);
-    setWindowTitle("e-sabit 2.1");
+       setWindowTitle("e-sabit");
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
    // qDebug()<<"boy:"<<screenGeometry.width()/34;
-    boy=screenGeometry.width()/34;
+    boy=screenGeometry.height()/25;
     fnt=(boy/5)*2;
    // qDebug()<<"fnt:"<<fnt;
     setFixedWidth(boy*12.3);
@@ -59,33 +57,17 @@ MainWindow::MainWindow(QWidget *parent) :
     this->move(x, y);
     this->setStyleSheet("background-color: #dfdfdf;");
 
-      //*******************tray***********************************/
-      // Tray icon menu
-      auto menu = this->createMenu();
-      this->trayIcon->setContextMenu(menu);
-
       // App icon
       auto appIcon = QIcon(":/icons/e-sabit.svg");
-      this->trayIcon->setIcon(appIcon);
       this->setWindowIcon(appIcon);
 
-      // Displaying the tray icon
-      this->trayIcon->show();     // Note: without explicitly calling show(), QSystemTrayIcon::activated signal will never be emitted!
 
-      // Interaction
-      connect(trayIcon, &QSystemTrayIcon::activated, this, &MainWindow::iconActivated);
-     // gizle();
 
-      timergizle = new QTimer(this);
-      connect(timergizle, SIGNAL(timeout()), this, SLOT(gizle()));
-      timergizle->start(1);
       labelYedekStatus=new QLabel();///ayar nesnesinden önce olmalıdır
       labelYedekStatus->setFixedSize(this->width(),boy);
        rb0=new QRadioButton();
        rb1=new QRadioButton();
       aw=ayar();
-
-      aw->setEnabled(false);
 
       /************************************************************/
         tw=new QTabWidget(this);
@@ -100,21 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 
-bool MainWindow::passwordKontrolSlot(QString kmt)
-{
-    system(kmt.toStdString().c_str());
-    if(QFile::exists("/usr/share/e-sabit/sabit")==true)
-    {  
-        system("rm -rf /usr/share/e-sabit/sabit");
-       // qDebug()<<"Şifre: doğru ";
-        return true;
-    }else
-    {
-      // qDebug()<<"Şifre: yanlış ";
-        return false;
-    }
-return false;
-}
+
 QString MainWindow::myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon)
 {
     Qt::WindowFlags flags = 0;
@@ -236,76 +204,10 @@ void MainWindow::listToFile(QString path,QStringList list, QString filename)
 }
 
 
-void  MainWindow::gizle()
-{
-    aw->setEnabled(false);
-    tw->setCurrentIndex(0);
-    QWidget::hide();
-    timergizle->stop();
 
-}
-void  MainWindow::widgetShow()
-{
-    if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit'"))
-    {
-        aw->setEnabled(true);
-        tw->setCurrentIndex(1);
-        this->showNormal();
-    }
-}
 
-QMenu* MainWindow::createMenu()
-{
-    auto closeAction = new QAction(tr("Ka&pat"), this);
-    connect( closeAction, SIGNAL(triggered()), this, SLOT(widgetClose()));
 
-    auto minimizeAction = new QAction(tr("Gi&zle"), this);
-    connect(minimizeAction, &QAction::triggered, this, &QWidget::hide);
 
-    auto restoreAction = new QAction(tr("&Ayarlar"), this);
-    connect( restoreAction, SIGNAL(triggered()), this, SLOT(widgetShow()));
-
-    auto menu = new QMenu(this);
-    menu->addAction(closeAction);
-    menu->addAction(minimizeAction);
-    menu->addAction(restoreAction);
-    menu->addSeparator();
-
-    return menu;
-}
-
-void MainWindow::iconActivated(QSystemTrayIcon::ActivationReason reason_)
-{
-  switch (reason_) {
-  case QSystemTrayIcon::Trigger:
-    this->trayIcon->showMessage("E-Sabit", "Kalıcı Kullanıcı Sistemi!");
-    break;
-  default:
-    ;
-  }
-}
-
-void MainWindow::widgetClose()
-{
-         if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit'"))
-        {
-QCoreApplication::exit(0);
-        }
-
-}
-
-void MainWindow::WidgetClosed()
-{
-        tw->setCurrentIndex(0);
-        QWidget::hide();
-}
-
-void MainWindow::closeEvent(QCloseEvent *event)
-{
-     emit WidgetClosed();
-     event->ignore();
-
-}
 
 
 

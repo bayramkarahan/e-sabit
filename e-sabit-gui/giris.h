@@ -23,11 +23,11 @@ QWidget *MainWindow::giris()
 {
     QWidget *girisPage=new QWidget();
     /*******************************************************/
-    QPixmap pic(":/icons/pardus.svg");
-    auto  pardusLogo = new QLabel(girisPage);
-    pardusLogo->setFixedSize(QSize(boy*3,boy*3));
-    pardusLogo->setPixmap(pic);
-    pardusLogo->setScaledContents(true);
+    QPixmap pic(":/icons/e-sabit.svg");
+    auto Logo = new QLabel(girisPage);
+    Logo->setFixedSize(QSize(boy*3,boy*3));
+    Logo->setPixmap(pic);
+    Logo->setScaledContents(true);
 
     auto *sat1=new QLabel(girisPage);
     sat1->setText("1- Kullanıcı Bilgilerini Değişmez Hale Getiren Uygulamadır.");
@@ -63,7 +63,7 @@ QWidget *MainWindow::giris()
     layout->setContentsMargins(0, 0, 0,0);
    // layout->setVerticalSpacing(5);
     //layout->setColumnMinimumWidth(0, 37);
-     layout->addWidget(pardusLogo, 1,0,1,2,Qt::AlignHCenter);
+     layout->addWidget(Logo, 1,0,1,2,Qt::AlignHCenter);
 
     layout->addWidget(sat1,5,0,1,2);
      layout->addWidget(sat2,10,0,1,2);

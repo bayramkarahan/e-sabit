@@ -38,13 +38,13 @@ bool SingleInstance::listen(QString name)
 
 bool SingleInstance::hasPrevious(QString name, QStringList arg)
 {
-    qDebug() << "Checking for previous instance...";
+  //  qDebug() << "Checking for previous instance...";
     QLocalSocket socket;
     socket.connectToServer(name, QLocalSocket::ReadWrite);
 
     if(socket.waitForConnected())
     {
-        qDebug() << "Sending args to previous instance...";
+     //   qDebug() << "Sending args to previous instance...";
         QByteArray buffer;
 
         foreach(QString item, arg)

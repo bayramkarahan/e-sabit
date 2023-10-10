@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Name=e-sabit-tray Application
+Name[tr]=e-sabit-tray Uygulaması
+Type=Application
+Comment=Simple Qt based e-sabit-tray Application
+Comment[tr]=Basit Qt tabanlı e-sabit-tray Uygulaması
+Terminal=false
+Exec=/usr/bin/e-sabit-tray
+Icon=/usr/share/icons/e-sabit.svg
+Categories=Qt;Utility;
+Keywords=sabit;e-sabit;task;
+GenericName=autostartesabittray
+Name[tr_TR]=autostartesabittray.desktop

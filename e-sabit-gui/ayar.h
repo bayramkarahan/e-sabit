@@ -41,12 +41,22 @@ void MainWindow::kullaniciYedekleButtonSlot()
             "\n\nBu işlem Seçilli Kullanıcının Dizininin Boyutuna ve Bilgisayarınızın Performansına Bağlı Olarak Bir Zaman Alacaktır.\n"
             "\nİşlemler Tamamlana Kadar Bekleyiniz!","evet","hayir","",QMessageBox::Question);
     if (sonuc == "evet"){
-        if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/backup.sh'"))
+       // if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/backup.sh'"))
+        //{
+        int a=system("/usr/share/e-sabit/backup.sh");
+        if (a==0)
         {
             myMessageBox("", "\n\nKullanıcı Bilgileri Yedeklendi..\n","","","tamam",QMessageBox::Information);
             yedekStatus();///yedek durumunu tespit alanı
+        }else
+        {
+            myMessageBox("", "\n\nKullanıcı Bilgileri Yedeklenirken Hatalarla Karşılaşıldı..\n","","","tamam",QMessageBox::Information);
+            yedekStatus();///yedek durumunu tespit alanı
+
         }
-    }
+        }
+       // }
+
 }
 
 void MainWindow::yedekStatus()
@@ -242,11 +252,21 @@ kullaniciYedekleButtonSlot();
                                              "\n\nBu işlem Seçilli Kullanıcının Dizininin Boyutuna ve Bilgisayarınızın Performansına Bağlı Olarak Bir Zaman Alacaktır.\n"
                                              "\nİşlemler Tamamlana Kadar Bekleyiniz!","evet","hayir","",QMessageBox::Question);
          if (sonuc == "evet"){
-             if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/restorebutton.sh'"))
+            ///* if(passwordKontrolSlot("pkexec sh -c 'touch /usr/share/e-sabit/sabit&&/usr/share/e-sabit/restorebutton.sh'"))
+            // {
+            int a=system("/usr/share/e-sabit/restorebutton.sh");
+             if (a==0)
              {
                  myMessageBox("", "\n\nKullanıcı Bilgileri Geri Yüklendi..\n","","","tamam",QMessageBox::Information);
                  yedekStatus();///yedek durumunu tespit alanı
+             }else
+             {
+                 myMessageBox("", "\n\nKullanıcı Bilgileri Geri Yüklenirken Hatalarla Karşılaşıldı..\n","","","tamam",QMessageBox::Information);
+                 yedekStatus();///yedek durumunu tespit alanı
+
              }
+
+                    // }*/
          }
 
      });
