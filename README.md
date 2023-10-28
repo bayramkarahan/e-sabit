@@ -1,19 +1,23 @@
 # e-sabit
 Linux Kullanıcı Bilgilerini Dondurmak için Yazılan Bir Uygulama
 <br/>
-![E-Sabit](0.png)
+![E-Sabit](1-uygulama-e-sabit.png)
 <br/>
 
-![E-Sabit](1.png)
+![E-Sabit](2-uygulama-e-sabit.png)
 <br/>
 
-![E-Sabit](2.png)
+![E-Sabit](3-uygulama-e-sabit.png)
 <br/>
 
-![E-Sabit](3.png)
+![E-Sabit](4-uygulama-e-sabit.png)
 <br/>
 
-![E-Sabit](4.png)
+![E-Sabit](5-uygulama-e-sabit.png)
+
+<br/>
+
+![E-Sabit](6-uygulama-e-sabit.png)
 
 <br/>
 
