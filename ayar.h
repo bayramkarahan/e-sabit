@@ -410,10 +410,10 @@ QWidget *MainWindow::ayar()
 
 
 
-            layout->addWidget(localuserLabel, 2,0,1,1);
-            layout->addWidget(localUsername, 2,1,1,1);
-            layout->addWidget(localpasswordLabel, 5,0,1,1);
-            layout->addWidget(localPassword, 5,1,1,1);
+    layout->addWidget(localuserLabel, 2,0,1,1);
+    layout->addWidget(localUsername, 2,1,1,1);
+    layout->addWidget(localpasswordLabel, 5,0,1,1);
+    layout->addWidget(localPassword, 5,1,1,1);
 
 
     layout->addWidget(new QLabel("<font size=2>Yedeklenecek Kullanıcı Dizini</font>"), 10,0,1,1);
