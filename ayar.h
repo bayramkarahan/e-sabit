@@ -322,6 +322,7 @@ QWidget *MainWindow::ayar()
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/backup.sh /usr/local/bin/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/restore.sh\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/backup.sh\\n\"";
+            liste<<"send \"echo "+localPassword->text()+"|sudo -S /bin/bash /usr/local/bin/backup.sh\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/e-sabit.conf /usr/local/share/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/share/e-sabit.conf\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S systemctl enable E-Sabit.service\\n\"";
@@ -341,6 +342,8 @@ QWidget *MainWindow::ayar()
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/backup.sh /usr/local/bin/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/restore.sh\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/bin/backup.sh\\n\"";
+            liste<<"send \"echo "+localPassword->text()+"|sudo -S /bin/bash /usr/local/bin/backup.sh\\n\"";
+
             liste<<"send \"echo "+localPassword->text()+"|sudo -S cp /home/"+QDir::homePath().split("/")[2]+"/e-sabit.conf /usr/local/share/\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S chmod 777 /usr/local/share/e-sabit.conf\\n\"";
             liste<<"send \"echo "+localPassword->text()+"|sudo -S systemctl stop E-Sabit.service\\n\"";
@@ -355,7 +358,15 @@ QWidget *MainWindow::ayar()
         }
         QString kmt22="chmod 777 /home/"+QDir::homePath().split("/")[2]+"/run.sh";
         system(kmt22.toStdString().c_str());
-
+       /* QStringList arguments1;
+              arguments1 << "-c" << QString("/home/"+QDir::homePath().split("/")[2]+"/backup.sh");
+              QProcess process1;
+              process1.start("/bin/bash",arguments1);
+               if(process1.waitForFinished())
+      {
+         // version = process.readAll();
+         //   result.chop(3);
+      }*/
         QString result="";
         QStringList arguments;
                 arguments << "-c" << QString("/home/"+QDir::homePath().split("/")[2]+"/run.sh");
@@ -410,10 +421,10 @@ QWidget *MainWindow::ayar()
 
 
 
-            layout->addWidget(localuserLabel, 2,0,1,1);
-            layout->addWidget(localUsername, 2,1,1,1);
-            layout->addWidget(localpasswordLabel, 5,0,1,1);
-            layout->addWidget(localPassword, 5,1,1,1);
+    layout->addWidget(localuserLabel, 2,0,1,1);
+    layout->addWidget(localUsername, 2,1,1,1);
+    layout->addWidget(localpasswordLabel, 5,0,1,1);
+    layout->addWidget(localPassword, 5,1,1,1);
 
 
     layout->addWidget(new QLabel("<font size=2>Yedeklenecek Kullanıcı Dizini</font>"), 10,0,1,1);
