@@ -43,8 +43,8 @@ MainWindow::MainWindow(QWidget *parent) :
       localDir="/usr/share/e-sabit/";
       //localDir="./";
    // wl=new QWidgetAction(this);
-    timer1.setSingleShot(true);
-    connect(&timer1, SIGNAL(timeout()), &loop, SLOT(quit()));
+    //timer1.setSingleShot(true);
+    //connect(&timer1, SIGNAL(timeout()), &loop, SLOT(quit()));
   //  connect(this, SIGNAL(replayReceived()), &loop, SLOT(quit()));
 
     trayIcon=new QSystemTrayIcon(this);

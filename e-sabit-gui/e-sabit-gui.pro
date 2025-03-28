@@ -39,9 +39,6 @@ desktop_file.path = /usr/share/applications/
 icon.files = icons/e-sabit.svg
 icon.path = /usr/share/e-sabit
 
-auto_start.files = e-sabit.desktop
-auto_start.path = /etc/xdg/autostart/
-
 service.files = e-sabit.service
 service.path = /lib/systemd/system/
 
@@ -54,7 +51,7 @@ restoreservice.path = /usr/share/e-sabit
 restorebutton.files = restorebutton.sh
 restorebutton.path = /usr/share/e-sabit
 
-INSTALLS += target desktop_file icon auto_start service backup restoreservice restorebutton
+INSTALLS += target desktop_file icon service backup restoreservice restorebutton
 
 DISTFILES += \
     e-sabit.service\
