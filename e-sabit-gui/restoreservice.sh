@@ -6,14 +6,16 @@ bilgi=$(cat /usr/share/e-sabit/e-sabit.conf|grep "yedekState|1")
 backup="/var/backups/e-sabit/$user"
 esabit="/home/$user/Masaüstü/esabit"
 
-# Eğer Serbest dizini yoksa oluştur
-if [ ! -d "$esabit" ]; then
-    mkdir -p "$esabit"
-    chown "$user":"$user" "$esabit"
-    chmod 755 "$esabit"
-fi
+
 
 if [ "yedekState|1" == "$bilgi" ]; then
+
+		# Eğer Serbest dizini yoksa oluştur
+		if [ ! -d "$esabit" ]; then
+			mkdir -p "$esabit"
+			chown "$user":"$user" "$esabit"
+			chmod 755 "$esabit"
+		fi
 
         if [ -d /var/backups/e-sabit/"$user" ]; then
                 rsync -apoglr --delete \

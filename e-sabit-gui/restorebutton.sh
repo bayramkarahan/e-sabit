@@ -7,14 +7,16 @@ user=$(basename "$usr")
 backup="/var/backups/e-sabit/$user"
 esabit="/home/$user/Masaüstü/esabit"
 
-# Eğer Serbest dizini yoksa oluştur
-if [ ! -d "$esabit" ]; then
-    mkdir -p "$esabit"
-    chown "$user":"$user" "$esabit"
-    chmod 755 "$esabit"
-fi
-
 if [ -d "$backup" ]; then
+
+
+	# Eğer Serbest dizini yoksa oluştur
+	if [ ! -d "$esabit" ]; then
+		mkdir -p "$esabit"
+		chown "$user":"$user" "$esabit"
+		chmod 755 "$esabit"
+	fi
+
     rsync -apoglr --delete \
         --exclude='Masaüstü/esabit' \
         "$backup"/ /home/"$user"/
