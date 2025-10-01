@@ -120,7 +120,8 @@ void  MainWindow::widgetShow()
     qDebug()<<"ekranı göster";
     QFont ff( "Arial", 7.5, QFont::Normal);
      // this->showNormal();
-system("sh -c \"pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY /usr/bin/e-sabit-gui\"");
+    system("sh -c \"pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY /usr/bin/e-sabit-gui\"");
+
  }
 QMenu* MainWindow::createMenu()
 {
