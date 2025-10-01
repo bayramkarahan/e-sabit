@@ -1,4 +1,5 @@
 #!/bin/sh
-systemctl disable e-sabit.service
-systemctl stop e-sabit.service
-systemctl daemon-reload
+systemctl disable e-sabit.service || true
+systemctl stop e-sabit.service || true
+systemctl daemon-reload || true
+rm -rf  /usr/share/e-sabit || true

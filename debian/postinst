@@ -1,12 +1,12 @@
 #!/bin/sh
 #chmod 777 /usr/share/e-sabit
-chmod 755 /usr/share/e-sabit/restorebutton.sh
-chmod 755 /usr/share/e-sabit/restoreservice.sh
-chmod 755 /usr/share/e-sabit/backup.sh
+chmod 755 /usr/share/e-sabit/restorebutton.sh || true
+chmod 755 /usr/share/e-sabit/restoreservice.sh || true
+chmod 755 /usr/share/e-sabit/backup.sh || true
 
-mkdir /var/backups
-mkdir /var/backups/e-sabit
+mkdir /var/backups || true
+mkdir /var/backups/e-sabit || true
 
-systemctl enable e-sabit.service
-systemctl start e-sabit.service
-systemctl daemon-reload
+systemctl enable e-sabit.service || true
+systemctl start e-sabit.service || true
+systemctl daemon-reload || true
