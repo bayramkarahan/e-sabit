@@ -2,4 +2,4 @@
 systemctl disable e-sabit.service || true
 systemctl stop e-sabit.service || true
 systemctl daemon-reload || true
-rm -rf  /usr/share/e-sabit/e-sabit.conf || true
+rm -rf  /usr/share/e-sabit/e-sabit.json || true

@@ -1,25 +1,23 @@
 #!/bin/bash
-
-conf="/usr/share/e-sabit/e-sabit.conf"
-
-usr=$(grep "kullaniciDizin" "$conf" | cut -d'|' -f 2)
+conf="/usr/share/e-sabit/e-sabit.json"   # JSON biçiminde
+# JSON'dan kullaniciDizin değerini al
+usr=$(jq -r '.[0].kullaniciDizin' "$conf")
 user=$(basename "$usr")
 backup="/var/backups/e-sabit/$user"
 esabit="/home/$user/Masaüstü/esabit"
 
 if [ -d "$backup" ]; then
 
-
-	# Eğer Serbest dizini yoksa oluştur
+        # Eğer Serbest dizini yoksa oluştur
 	if [ ! -d "$esabit" ]; then
-		mkdir -p "$esabit"
+	        mkdir -p "$esabit"
 		chown "$user":"$user" "$esabit"
 		chmod 755 "$esabit"
 	fi
 
     rsync -apoglr --delete \
         --exclude='Masaüstü/esabit' \
-        "$backup"/ /home/"$user"/
+	"$backup"/ /home/"$user"/
 
     chown -R "$user":"$user" /home/"$user"/
     chmod -R 755 /home/"$user"/   # gerekmedikçe devre dışı bırak

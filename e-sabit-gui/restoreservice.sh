@@ -1,23 +1,25 @@
 #!/bin/bash
-usr=$(cat /usr/share/e-sabit/e-sabit.conf|grep "kullaniciDizin"|cut -d'|' -f 2)
-user=$(echo "$usr"|cut -d'/' -f 3)
-
-bilgi=$(cat /usr/share/e-sabit/e-sabit.conf|grep "yedekState|1")
+conf="/usr/share/e-sabit/e-sabit.json"   # JSON biçiminde
+# Eski yapıyla aynı mantıkta kullanıcı dizinini çek
+usr=$(jq -r '.[0].kullaniciDizin' "$conf")
+user=$(basename "$usr")
+# yedekState true ise bilgi değişkeni 1 gibi çalışsın
+yedekState=$(jq -r '.[0].yedekState' "$conf")
 backup="/var/backups/e-sabit/$user"
 esabit="/home/$user/Masaüstü/esabit"
 
+# Eski sistemde: bilgi == "yedekState|1"
+# Yeni sistemde: yedekState == true
+if [ "$yedekState" == "true" ]; then
 
+        # Eğer Serbest dizini yoksa oluştur
+        if [ ! -d "$esabit" ]; then
+            mkdir -p "$esabit"
+            chown "$user":"$user" "$esabit"
+            chmod 755 "$esabit"
+        fi
 
-if [ "yedekState|1" == "$bilgi" ]; then
-
-		# Eğer Serbest dizini yoksa oluştur
-		if [ ! -d "$esabit" ]; then
-			mkdir -p "$esabit"
-			chown "$user":"$user" "$esabit"
-			chmod 755 "$esabit"
-		fi
-
-        if [ -d /var/backups/e-sabit/"$user" ]; then
+        if [ -d "$backup" ]; then
                 rsync -apoglr --delete \
                     --exclude='Masaüstü/esabit' \
                     "$backup"/ /home/"$user"/

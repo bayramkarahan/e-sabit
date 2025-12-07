@@ -30,6 +30,9 @@
 #include<QPrinter>
 #include<QTextEdit>
 #include<QRadioButton>
+#include <QDirIterator>
+#include<Database.h>
+#include<QJsonArray>
 namespace Ui {
 class MainWindow;
 }
@@ -41,11 +44,7 @@ class MainWindow : public QMainWindow
 public:
 
 public slots:
-
-    void listToFile(QString path, QStringList list, QString filename);
-    QStringList fileToList(QString path,QString filename);
-    QString listGetLine(QStringList list, QString data);
-    QStringList listRemove(QStringList list, QString data);
+    qint64 getPathSize(const QString &path);
     void kullaniciYedekleButtonSlot();
      QString myMessageBox(QString baslik, QString mesaj, QString evet, QString hayir, QString tamam, QMessageBox::Icon icon);
     void yedekStatus();
@@ -81,9 +80,10 @@ private:
     QLineEdit *kullaniciDizinLineEdit;
     int fnt=10;
     QLabel *labelYedekStatus;
-    QString yedekState="0";
+    bool yedekState=false;
     QRadioButton *rb0;
     QRadioButton *rb1;
+    QString localDir;
 };
 
 #endif // MAINWINDOW_H

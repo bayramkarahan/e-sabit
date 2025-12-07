@@ -14,5 +14,6 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
     	libqt5gui5,
     	libqt5network5,
     	libqt5widgets5,
-        rsync
+        rsync,
+        jq
 Description: e-sabit uygulaması

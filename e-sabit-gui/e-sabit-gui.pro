@@ -21,8 +21,9 @@ SOURCES += \
         mainwindow.cpp
 
 HEADERS += \
+    Database.h \
+    backupProgressDialog.h \
         mainwindow.h \
-    filecrud.h \
     ayar.h \
     giris.h \
     hakkinda.h

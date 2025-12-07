@@ -24,7 +24,13 @@
 #include<QFileInfo>
 #include<QButtonGroup>
 #include<QRadioButton>
-
+#include <sys/stat.h>
+#include <dirent.h>
+#include <QString>
+#include <QByteArray>
+#include <QDirIterator>
+#include <QDebug>
+#include<backupProgressDialog.h>
 #ifndef AYAR_H
 #define AYAR_H
 void MainWindow::kullaniciYedekleButtonSlot()
@@ -78,6 +84,20 @@ void MainWindow::yedekStatus()
     }
 
 }
+qint64 MainWindow::getPathSize(const QString &path)
+{
+    QProcess p;
+    p.start("du", QStringList() << "-sb" << path);
+    p.waitForFinished();
+
+    QString output = p.readAllStandardOutput();
+    QString sizeStr = output.split("\t").first();
+    return sizeStr.toLongLong();
+}
+
+
+
+
 
 QWidget *MainWindow::ayar()
 {
@@ -92,13 +112,47 @@ QWidget *MainWindow::ayar()
     connect(rb0, &QRadioButton::clicked, [=]() {
       //  QString sonuc=myMessageBox("E-Sabit", "\n\nAyarlar Kaydedildi..\n\n","evet","hayir","tamam",QMessageBox::Information);
        //qDebug()<<"rb1 click";
-        yedekState="1";
-        system("rm -rf /usr/share/e-sabit/e-sabit.conf");
-        QStringList ayar_lst;
-        ayar_lst=listRemove(ayar_lst,"yedekState");
-        ayar_lst.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
-        ayar_lst.append("yedekState|"+yedekState);
-        listToFile("/usr/share/e-sabit/",ayar_lst,"e-sabit.conf");
+      QString userHome = kullaniciDizinLineEdit->text();
+      qint64 sizeBytes = getPathSize(userHome);
+      double sizeMB = sizeBytes / (1024.0 * 1024.0);
+      double sizeGiB = sizeBytes / (1024.0 * 1024.0 * 1024.0);
+
+      //qDebug() << "Boyut (GiB):" << sizeGiB;
+      //qDebug() << "Boyut (MB):" << sizeMB;
+
+      if (sizeMB > 500.0) {
+          QMessageBox::StandardButton reply;
+
+          reply = QMessageBox::question(nullptr,
+                                        "Yedekleme Onayı",
+                                        QString("Bu kullanıcının yedek boyutu: %1 GiB (%2 MB)\n"
+                                                "500 MB limitini aşıyor.\n"
+                                                "Devam edilsin mi?")
+                                            .arg(QString::number(sizeGiB, 'f', 2))
+                                            .arg(QString::number(sizeMB, 'f', 0)),
+                                        QMessageBox::Yes | QMessageBox::No);
+
+          if (reply == QMessageBox::No)
+              return;
+      }
+
+      DatabaseHelper *db=new DatabaseHelper(localDir+"e-sabit.json");
+      db->Sil("recordtype","settings");
+      // Döngü ile tüm dersleri ekle
+      QJsonObject obj;
+      obj["recordtype"] = "settings";
+      obj["kullaniciDizin"] = kullaniciDizinLineEdit->text();
+      obj["yedekState"] = true;
+      db->Ekle(obj);
+
+     // QString source =userHome;
+      QString user=kullaniciDizinLineEdit->text().split("/")[2];
+      //QString dest   = QString("/var/backups/e-sabit/%1/").arg(user);
+      //BackupProgressDialog *dlg = new BackupProgressDialog(source, dest);
+      //dlg->exec();
+      ///return;
+
+
         if(kullaniciDizinLineEdit->text()!=""&&kullaniciDizinLineEdit->text().split("/").count()>1)
         {
             if(kullaniciDizinLineEdit->text()!=""&&QFile::exists("/var/backups/e-sabit/"+kullaniciDizinLineEdit->text().split("/")[2])!=true){
@@ -108,31 +162,38 @@ QWidget *MainWindow::ayar()
         yedekStatus();///yedek durumunu test eder
     });
     connect(rb1, &QRadioButton::clicked, [=]() {
-        //qDebug()<<"rb2 click";
-        yedekState="0";
-        system("rm -rf /usr/share/e-sabit/e-sabit.conf");
-        QStringList ayar_lst;
-        ayar_lst=listRemove(ayar_lst,"yedekState");
-        ayar_lst.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
-        ayar_lst.append("yedekState|"+yedekState);
-        listToFile("/usr/share/e-sabit/",ayar_lst,"e-sabit.conf");
+        DatabaseHelper *db=new DatabaseHelper(localDir+"e-sabit.json");
+
+        db->Sil("recordtype","settings");
+        // Döngü ile tüm dersleri ekle
+        QJsonObject obj;
+        obj["recordtype"] = "settings";
+        obj["kullaniciDizin"] = kullaniciDizinLineEdit->text();
+        obj["yedekState"] = false;
+        db->Ekle(obj);
+
          yedekStatus();///yedek durumunu test eder
      });
 
      QFont f2( "Arial", fnt-4, QFont::Normal);
     /*******************************************************/
-    QStringList ayarlst=fileToList("/usr/share/e-sabit/","e-sabit.conf");
-    /*******************************************/
+    //QStringList ayarlst=fileToList("/usr/share/e-sabit/","e-sabit.conf");
+     DatabaseHelper *db=new DatabaseHelper(localDir+"e-sabit.json");
+     QJsonArray settings = db->Ara("recordtype", "settings");
+      QJsonObject veri;
 
-    if(listGetLine(ayarlst,"yedekState")!="")
-    {
-        yedekState=listGetLine(ayarlst,"yedekState").split("|")[1];
-        if(yedekState=="1")
+      if (!settings.isEmpty()) {
+          veri = settings.first().toObject();
+      }
+    /*******************************************/
+      if (veri.contains("yedekState"))
+        {
+          yedekState=veri["yedekState"].toBool();
+        if(yedekState)
             rb0->setChecked(true);
         else
             rb1->setChecked(true);
-
-    }
+        }
      /********************************************************/
 
     QToolButton *kullaniciYedekleButton= new QToolButton;
@@ -143,16 +204,18 @@ QWidget *MainWindow::ayar()
     kullaniciYedekleButton->setAutoRaise(true);
     kullaniciYedekleButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     kullaniciYedekleButton->setFont(f2);
-    kullaniciYedekleButton->setText("Kullanıcı Yedekle");
+    kullaniciYedekleButton->setText("Kullanıcıyı Yedekle");
 
     kullaniciDizinLineEdit=new QLineEdit(ayarPage);
     kullaniciDizinLineEdit->setReadOnly(true);
     kullaniciDizinLineEdit->setFixedSize(boy*6,boy);
-    if(listGetLine(ayarlst,"kullaniciDizin")!="")
-        kullaniciDizinLineEdit->setText(listGetLine(ayarlst,"kullaniciDizin").split("|")[1]);
+    if (veri.contains("kullaniciDizin"))
+    {
+        kullaniciDizinLineEdit->setText(veri["kullaniciDizin"].toString());
+    }
 
     connect(kullaniciYedekleButton, &QPushButton::clicked, [=]() {
-kullaniciYedekleButtonSlot();
+    kullaniciYedekleButtonSlot();
     });
     /*********************************************************************/
 
@@ -184,11 +247,13 @@ kullaniciYedekleButtonSlot();
                                             "\n\n İşlemden  Emin Misiniz?","evet","hayir","",QMessageBox::Question);
         if (sonuc == "evet") {
             /*****************************************************************/
-            system("rm -rf /usr/share/e-sabit/e-sabit.conf");
-            QStringList ayarlist;
-            ayarlist.append("kullaniciDizin|"+kullaniciDizinLineEdit->text());
-            ayarlist.append("yedekState|1");
-            listToFile("/usr/share/e-sabit/",ayarlist,"e-sabit.conf");
+            DatabaseHelper *db=new DatabaseHelper(localDir+"e-sabit.json");
+            db->Sil("recordtype","settings");
+            QJsonObject obj;
+            obj["recordtype"] = "settings";
+            obj["kullaniciDizin"] = kullaniciDizinLineEdit->text();
+            obj["yedekState"] = true;
+            db->Ekle(obj);
             QString yuser=kullaniciDizinLineEdit->text().split("/")[2];
             rb0->setChecked(true);
             QString sonuc=myMessageBox("E-Sabit", "\n"
@@ -208,20 +273,27 @@ kullaniciYedekleButtonSlot();
 
         }
         if (sonuc=="hayir") {
-            QStringList ayarlstcopy=fileToList("/usr/share/e-sabit/","e-sabit.conf");
-            if(listGetLine(ayarlst,"yedekState")!="")
-            {
-                yedekState=listGetLine(ayarlst,"yedekState").split("|")[1];
-                if(yedekState=="1")
+     DatabaseHelper *db=new DatabaseHelper(localDir+"e-sabit.json");
+     QJsonArray settings = db->Ara("recordtype", "settings");
+     QJsonObject veri;
+
+      if (!settings.isEmpty()) {
+          veri = settings.first().toObject();
+      }
+    /*******************************************/
+      if (veri.contains("yedekState"))
+      {
+          yedekState=veri["yedekState"].toBool();
+                if(yedekState)
                     rb0->setChecked(true);
                 else
                     rb1->setChecked(true);
 
-            }
-            if(listGetLine(ayarlstcopy,"kullaniciDizin")!="")
-                kullaniciDizinLineEdit->setText(listGetLine(ayarlstcopy,"kullaniciDizin").split("|")[1]);
-            else
-                kullaniciDizinLineEdit->setText("");
+        }
+      if (veri.contains("kullaniciDizin"))
+          kullaniciDizinLineEdit->setText(veri["kullaniciDizin"].toString());
+        else
+        kullaniciDizinLineEdit->setText("");
         }
 
     });

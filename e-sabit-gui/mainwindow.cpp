@@ -26,7 +26,7 @@
 #include<QFile>
 #include<QFileDialog>
 #include<QRegularExpression>
-#include<filecrud.h>
+
 #include<QTimeEdit>
 #include<QDate>
 #include<QTimer>
@@ -44,13 +44,24 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
  {
-       setWindowTitle("e-sabit");
+#ifdef Q_OS_LINUX
+    // qDebug()<< "Linux version";
+     localDir="/usr/share/e-sabit/";
+#endif
+
+#ifdef Q_OS_WIN
+    // qDebug()<< "Windows version";
+    localDir = QCoreApplication::applicationDirPath() + "/";
+#endif
+
+
+
     QRect screenGeometry = QApplication::desktop()->screenGeometry();
    // qDebug()<<"boy:"<<screenGeometry.width()/34;
     boy=screenGeometry.height()/25;
     fnt=(boy/5)*2;
    // qDebug()<<"fnt:"<<fnt;
-    setFixedWidth(boy*12.3);
+    setFixedWidth(boy*15);
     setFixedHeight(boy*10);
     int x = (screenGeometry.width()/2 - this->width()/2);
     int y = (screenGeometry.height() - this->height()) / 2;
@@ -61,6 +72,12 @@ MainWindow::MainWindow(QWidget *parent) :
       auto appIcon = QIcon(":/icons/e-sabit.svg");
       this->setWindowIcon(appIcon);
 
+      QProcess process;
+      process.start("/bin/bash", {"-c", "dpkg -s e-sabit | grep -i '^Version:' | awk '{print $2}'"});
+      process.waitForFinished();
+
+      QString version = QString::fromUtf8(process.readAll()).trimmed();
+      setWindowTitle("e-sabit " + version);
 
 
       labelYedekStatus=new QLabel();///ayar nesnesinden önce olmalıdır
@@ -115,99 +132,4 @@ MainWindow::~MainWindow()
 {
   //  delete ui;
 }
-
-
-QStringList MainWindow::listRemove(QStringList list,QString data)
- {
-       QRegularExpression re(data);
-     for(int i=0;i<list.count();i++)if(list[i].contains(re)) list.removeAt(i);
-    // qDebug()<<list;
-     return list;
- }
-QString MainWindow::listGetLine(QStringList list,QString data)
-{
-    QRegularExpression re(data);
-   for(int i=0;i<list.count();i++) if(list[i].contains(re)) return list[i];
-   //qDebug()<<list;
-   return "";
-}
-QStringList MainWindow::fileToList(QString path, QString filename)
-{
-  FileCrud *fcc=new FileCrud();
-  fcc->dosya=path+filename;
- // qDebug()<<fcc->dosya;
-  QStringList list;
-  for(int i=1;i<=fcc->fileCount();i++)
-  {
-       QString line=fcc->fileGetLine(i);
-      // qDebug()<<line;
-       if(line!="")
-       {
-           line.chop(1);
-           QStringList lst=line.split("|");
-           QString ln="";
-           if(lst.count()>0)ln.append(lst[0]);
-           if(lst.count()>1)ln.append("|").append(lst[1]);
-           if(lst.count()>2)ln.append("|").append(lst[2]);
-           if(lst.count()>3)ln.append("|").append(lst[3]);
-           if(lst.count()>4)ln.append("|").append(lst[4]);
-           if(lst.count()>5)ln.append("|").append(lst[5]);
-
-           list <<ln;
-           //qDebug()<<ln;
-           // list <<lst[0]+"|"+lst[1]+"|"+lst[2]+"|"+lst[3]+"|"+lst[4]+"|"+lst[5];
-
-       }
-  }
-     return list;
-}
-void MainWindow::listToFile(QString path,QStringList list, QString filename)
-{
-  FileCrud *fcc=new FileCrud();
-  fcc->dosya=path+filename;
-  fcc->fileRemove();
-  for(int i=0;i<list.count();i++)
-  {
-       QString line=list[i];
-       if(line!="")
-       {
-           //line.chop(1);
-           QStringList lst=line.split("|");
-           //qDebug()<<line;
-           QString ln="";
-           if(lst.count()>0)ln.append(lst[0]);
-           if(lst.count()>1)ln.append("|").append(lst[1]);
-           if(lst.count()>2)ln.append("|").append(lst[2]);
-           if(lst.count()>3)ln.append("|").append(lst[3]);
-           if(lst.count()>4)ln.append("|").append(lst[4]);
-           if(lst.count()>5)ln.append("|").append(lst[5]);
-
-           //qDebug()<<ln;
-           fcc->fileWrite(ln);
-
-       }
-
-  }
-
-  /********************file permission*************************/
-     QFile file(path+filename);
-      if (file.open(QFile::ReadWrite)){
-              if(!file.setPermissions(QFileDevice::WriteUser | QFileDevice::ReadUser|QFileDevice::ExeUser|
-                                      QFileDevice::WriteOwner | QFileDevice::ReadOwner|QFileDevice::ExeOwner|
-                                      QFileDevice::WriteGroup | QFileDevice::ReadGroup|QFileDevice::ExeGroup|
-                                      QFileDevice::WriteOther | QFileDevice::ReadOther|QFileDevice::ExeOther)){
-                  qDebug()<< "Error in permissions";
-               }
-              file.close();
-      }
-  /***********************************************/
-}
-
-
-
-
-
-
-
-
 

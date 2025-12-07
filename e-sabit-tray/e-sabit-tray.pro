@@ -18,7 +18,6 @@ SOURCES += \
     singleinstance.cpp
 
 HEADERS += \
-    filecrud.h \
         mainwindow.h \
     singleinstance.h
 

@@ -30,7 +30,6 @@
 #include<QTimer>
 #include<QEventLoop>
 #include<QLabel>
-#include<filecrud.h>
 #include<QSize>
 #include<QScreen>
 #include<QTableWidget>
@@ -47,13 +46,6 @@ virtual void closeEvent ( QCloseEvent * event );
 
 public slots:
    // QWidget ayar();
-    void listToFile(QStringList list, QString filename);
-    QStringList fileToList(QString filename);
-    QString listGetLine(QStringList list,QString data);
-    QStringList listRemove(QStringList list,QString data);
-    QStringList listReplace(QStringList list,QString oldData,QString newData,int index);
-    QStringList listMerge(QStringList list1, QStringList list2,int dataIndex);
-    QStringList listGetList(QStringList list, QString data,int index);
 
     void iconActivated(QSystemTrayIcon::ActivationReason);
     void gizle();
